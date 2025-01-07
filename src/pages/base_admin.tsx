@@ -26,30 +26,45 @@
  * --------------------------------------------------------------------------------
  */
 
+import {Navigation24Filled} from "@fluentui/react-icons";
+import {SideNavComponent} from "../components/admin/side_nav_component.tsx";
+import {useEffect, useState} from "react";
 import {Route, Routes, useLocation, useNavigate} from "react-router";
-import {useEffect} from "react";
-import {InfoUserAPI} from "../apis/api_info.ts";
-import {AuthLogin} from "./auth/auth_login.tsx";
+import {AdminDashboard} from "./admin/admin_dashboard.tsx";
+import {AdminLink} from "./admin/admin_link.tsx";
 
-export default function BaseAuth() {
+export function BaseAdmin() {
+    const location = useLocation();
     const navigate = useNavigate();
-    const getLocation = useLocation();
+    const [open, setOpen] = useState<boolean>(true);
+    const [headerName, setHeaderName] = useState<string>("看板");
+    const [menuInfo, setMenuInfo] = useState<string>("dashboard");
 
     useEffect(() => {
-        if (getLocation.pathname === "/auth") {
-            navigate("/auth/login");
+        if (location.pathname === "/admin" || location.pathname === "/admin/") {
+            navigate("/admin/dashboard");
         }
-        setTimeout(async () => {
-            const getResp = await InfoUserAPI();
-            if (getResp?.output === "Success") {
-                navigate("/admin/dashboard");
-            }
-        })
-    });
+    }, [location.pathname, navigate]);
 
     return (
-        <Routes>
-            <Route path={"login"} element={<AuthLogin/>}/>
-        </Routes>
+        <div className={"flex min-h-dvh"}>
+            <SideNavComponent open={open} emit={setOpen} menuInfo={menuInfo}/>
+            <div className={"p-8"}>
+                <div className={"flex items-center space-x-3"}>
+                    <button onClick={() => {
+                        setOpen(!open)
+                    }}>
+                        <Navigation24Filled/>
+                    </button>
+                    <div className={"text-2xl font-medium"}>{headerName}</div>
+                </div>
+                <div className={"pt-3"}>
+                    <Routes>
+                        <Route path={"dashboard"} element={<AdminDashboard headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                        <Route path={"link"} element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                    </Routes>
+                </div>
+            </div>
+        </div>
     );
 }

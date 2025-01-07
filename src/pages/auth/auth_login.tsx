@@ -56,6 +56,7 @@ export function AuthLogin() {
                 message: `${getResp.data?.user.username}！`,
                 type: "success",
             } as ToastStore));
+            localStorage.setItem("UserToken", getResp.data!.token);
             setTimeout(() => {
                 navigate("/admin/dashboard");
             }, 500);

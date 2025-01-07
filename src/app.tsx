@@ -36,6 +36,7 @@ import {clearToaster, setToaster} from "./stores/toaster_store.ts";
 import BaseAuth from "./pages/base_auth.tsx";
 import {InfoAPI} from "./apis/api_info.ts";
 import {setWebInfo} from "./stores/web_info_store.ts";
+import {BaseAdmin} from "./pages/base_admin.tsx";
 
 export function App() {
     const dispatch = useDispatch();
@@ -89,7 +90,8 @@ export function App() {
             <Toaster toasterId={toasterId}/>
             <Routes>
                 <Route path={"/"} element={<BaseIndex/>}/>
-                <Route path={"auth/*"} element={<BaseAuth/>}/>
+                <Route path={"/auth/*"} element={<BaseAuth/>}/>
+                <Route path={"/admin/*"} element={<BaseAdmin/>}/>
             </Routes>
         </>
     );

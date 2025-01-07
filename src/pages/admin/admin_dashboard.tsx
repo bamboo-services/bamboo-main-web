@@ -26,30 +26,22 @@
  * --------------------------------------------------------------------------------
  */
 
-import {Route, Routes, useLocation, useNavigate} from "react-router";
+import {useSelector} from "react-redux";
+import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
 import {useEffect} from "react";
-import {InfoUserAPI} from "../apis/api_info.ts";
-import {AuthLogin} from "./auth/auth_login.tsx";
 
-export default function BaseAuth() {
-    const navigate = useNavigate();
-    const getLocation = useLocation();
+export function AdminDashboard({headerEmit, menuEmit}: Readonly<{
+    headerEmit: (data: string) => void,
+    menuEmit: (data: string) => void
+}>) {
+    const webInfo = useSelector((state: { webInfo: SystemInfoEntity}) => state.webInfo);
+
+    document.title = `看板 | ${webInfo.site.site_name}`
 
     useEffect(() => {
-        if (getLocation.pathname === "/auth") {
-            navigate("/auth/login");
-        }
-        setTimeout(async () => {
-            const getResp = await InfoUserAPI();
-            if (getResp?.output === "Success") {
-                navigate("/admin/dashboard");
-            }
-        })
-    });
+        headerEmit("看板");
+        menuEmit("dashboard");
+    }, [headerEmit, menuEmit]);
 
-    return (
-        <Routes>
-            <Route path={"login"} element={<AuthLogin/>}/>
-        </Routes>
-    );
+    return <div>AdminDashboard</div>
 }
