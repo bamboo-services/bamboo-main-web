@@ -6,11 +6,15 @@ import {Provider} from 'react-redux';
 import store from "./stores/store.ts";
 import {App} from "./app.tsx";
 
+const customTheme = {};
+
 createRoot(document.getElementById('root')!).render(
     <FluentProvider theme={webLightTheme}>
         <Provider store={store}>
             <BrowserRouter>
-                <App/>
+                <FluentProvider theme={customTheme}>
+                    <App/>
+                </FluentProvider>
             </BrowserRouter>
         </Provider>
     </FluentProvider>,

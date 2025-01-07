@@ -27,7 +27,7 @@
  */
 
 /**
- * # ToastStore 类型定义
+ * # ToastStore
  * 用于存储和管理 Toast 消息的相关信息
  *
  * @param {string} toastId - Toast 消息的唯一标识符

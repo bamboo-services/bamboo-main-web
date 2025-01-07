@@ -32,7 +32,10 @@ import {BaseIndex} from "./pages/base_index.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {ToastStore} from "./models/store/toast_stores.ts";
 import {useEffect} from "react";
-import {clearToaster} from "./stores/toaster_store.ts";
+import {clearToaster, setToaster} from "./stores/toaster_store.ts";
+import BaseAuth from "./pages/base_auth.tsx";
+import {InfoAPI} from "./apis/api_info.ts";
+import {setWebInfo} from "./stores/web_info_store.ts";
 
 export function App() {
     const dispatch = useDispatch();
@@ -59,11 +62,34 @@ export function App() {
         }
     }, [dispatch, dispatchToast, toasterStore]);
 
+    useEffect(() => {
+        if (localStorage.getItem("WebInfo") == null) {
+            setTimeout(async () => {
+                const getRes = await InfoAPI();
+                if (getRes?.output === "Success") {
+                    dispatch(setWebInfo(getRes.data!));
+                    localStorage.setItem("WebInfo", JSON.stringify(getRes.data!));
+                } else {
+                    dispatch(
+                        setToaster({
+                            message: getRes?.error_message,
+                            type: "error",
+                            title: getRes?.message,
+                        } as ToastStore)
+                    );
+                }
+            });
+        } else {
+            dispatch(setWebInfo(JSON.parse(localStorage.getItem("WebInfo")!)));
+        }
+    }, [dispatch]);
+
     return (
         <>
             <Toaster toasterId={toasterId}/>
             <Routes>
                 <Route path={"/"} element={<BaseIndex/>}/>
+                <Route path={"auth/*"} element={<BaseAuth/>}/>
             </Routes>
         </>
     );

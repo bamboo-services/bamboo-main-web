@@ -27,17 +27,15 @@
  */
 
 /**
- * AuthLoginDTO
+ * # AuthLoginDTO
+ * 用于处理登录请求的 DTO（数据传输对象）
  *
- * 登录DTO，用于登录请求
- *
- * # 属性
- * - user: string
- * - pass: string
- * - remember: boolean
+ * @param {string} user - 用户名
+ * @param {string} pass - 用户密码
+ * @param {boolean} remember - 是否记住登录状态
  */
-export type AuthLoginDTO = {
+export interface AuthLoginDTO {
     user: string,
     pass: string,
-    remember: boolean
+    remember: boolean,
 }

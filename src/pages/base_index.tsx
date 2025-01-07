@@ -28,49 +28,16 @@
 
 import BackgroundWithIndex from "../assets/ts/body_background.ts";
 import {Link} from "react-router";
-import {InfoAPI} from "../apis/api_info.ts";
-import {useEffect, useState} from "react";
 
 import myAvatar from "../assets/images/my_avatar.png";
-import {setToaster} from "../stores/toaster_store.ts";
-import {ToastStore} from "../models/store/toast_stores.ts";
-import {useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
 import {SystemInfoEntity} from "../models/entity/system_info_entity.ts";
 
 export function BaseIndex() {
-    const dispatch = useDispatch();
+    const webInfoStore = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
-    const [systemInfo, setSystemInfo] = useState({
-        site: {
-            site_name: "竹叶",
-            author: "筱锋xiao_lfeng",
-        },
-        blogger: {}
-    } as SystemInfoEntity);
 
-    useEffect(() => {
-        if (localStorage.getItem("WebInfo") == null) {
-            setTimeout(async () => {
-                const getRes = await InfoAPI();
-                if (getRes?.output === "Success") {
-                    setSystemInfo(getRes.data!);
-                    localStorage.setItem("WebInfo", JSON.stringify(getRes.data!));
-                } else {
-                    dispatch(
-                        setToaster({
-                            message: getRes?.error_message,
-                            type: "error",
-                            title: getRes?.message,
-                        } as ToastStore)
-                    );
-                }
-            });
-        } else {
-            setSystemInfo(JSON.parse(localStorage.getItem("WebInfo")!));
-        }
-    }, [dispatch]);
-
-    document.title = `${systemInfo.site.site_name} - ${systemInfo.blogger.nick}`;
+    document.title = `${webInfoStore.site.site_name} - ${webInfoStore.blogger.nick}`;
 
     return (
         <div style={BackgroundWithIndex} className={"h-dvh w-lvw grid"}>
@@ -83,14 +50,14 @@ export function BaseIndex() {
                     <div className={"text-center grid gap-3"}>
                         <h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl"
                             style={{textShadow: "1px 1px 4px rgba(38,164,192,0.32)"}}>
-                            {systemInfo.site.site_name}
+                            {webInfoStore.site.site_name}
                         </h1>
                         <div className={"lg:hidden items-center flex justify-center"}>
                             <img alt="UserAvatar" className={"rounded-xl w-auto h-32"}
                                  src={myAvatar} draggable={false}/>
                         </div>
                         <p className={"lg:text-xl/relaxed"}>
-                            {systemInfo.blogger.description}
+                            {webInfoStore.blogger.description}
                         </p>
                         <div className={"flex flex-wrap justify-center gap-4 pt-8 md:pt-6 lg:pt-4"}>
                             <Link

@@ -26,13 +26,42 @@
  * --------------------------------------------------------------------------------
  */
 
-import {configureStore} from "@reduxjs/toolkit";
-import {toasterStore} from "./toaster_store.ts";
-import {webInfoStore} from "./web_info_store.ts";
+import {Route, Routes, useLocation, useNavigate} from "react-router";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {setToaster} from "../stores/toaster_store.ts";
+import {ToastStore} from "../models/store/toast_stores.ts";
+import {InfoUserAPI} from "../apis/api_info.ts";
+import {AuthLogin} from "./auth/auth_login.tsx";
 
-export default configureStore({
-    reducer: {
-        toasters: toasterStore.reducer,
-        webInfo: webInfoStore.reducer,
-    }
-})
+export default function BaseAuth() {
+    const navigate = useNavigate();
+    const getLocation = useLocation();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (getLocation.pathname === "/auth") {
+            navigate("/auth/login");
+        }
+        setTimeout(async () => {
+            // 检查用户是否登录
+            const getRes = await InfoUserAPI();
+            if (getRes?.output === "Success") {
+                dispatch(setToaster({
+                    message: `您好 ${getRes.data?.username} 用户`,
+                    type: "info",
+                    show: true,
+                } as ToastStore));
+                setTimeout(() => {
+                    navigate("/admin/dashboard");
+                }, 500);
+            }
+        })
+    });
+
+    return (
+        <Routes>
+            <Route path={"login"} element={<AuthLogin/>}/>
+        </Routes>
+    );
+}

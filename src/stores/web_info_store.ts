@@ -26,13 +26,36 @@
  * --------------------------------------------------------------------------------
  */
 
-import {configureStore} from "@reduxjs/toolkit";
-import {toasterStore} from "./toaster_store.ts";
-import {webInfoStore} from "./web_info_store.ts";
+import { createSlice } from "@reduxjs/toolkit";
+import { SystemInfoEntity } from "../models/entity/system_info_entity.ts";
 
-export default configureStore({
-    reducer: {
-        toasters: toasterStore.reducer,
-        webInfo: webInfoStore.reducer,
+/**
+ * # webInfoStore
+ *
+ * 定义 webInfoStore，用于管理网站信息和博主信息的状态。
+ * webInfoStore 包含设置网站信息的方法。
+ */
+export const webInfoStore = createSlice({
+    name: "webInfo",
+    initialState: {
+        site: {},
+        blogger: {}
+    } as SystemInfoEntity,
+    reducers: {
+        /**
+         * 设置网站和博主信息。
+         * @param state - 当前的 webInfoStore 状态。
+         * @param action - 包含网站信息和博主信息的 action。
+         *   - site: 网站信息，包含站点的名称、作者、版本等。
+         *   - blogger: 博主信息，包含博主的姓名、昵称、邮箱等。
+         */
+        setWebInfo: (state, action) => {
+            state.site = action.payload.site; // 更新网站信息
+            state.blogger = action.payload.blogger; // 更新博主信息
+        }
     }
-})
+});
+
+// 导出 action，用于组件中 dispatch 调用
+export const { setWebInfo } = webInfoStore.actions;
+
