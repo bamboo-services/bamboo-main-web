@@ -31,12 +31,10 @@ import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
 import {useEffect, useState} from "react";
 import {
     Button,
-    Caption1,
     Card,
     CardFooter,
     CardHeader,
     CardPreview,
-    Text,
     Toolbar,
     ToolbarButton,
     ToolbarDivider
@@ -115,7 +113,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                 <div className={"grid grid-cols-2 gap-3"}>
                     {adminLinkList.total !== 0 ? adminLinkList?.links?.map((data, index) => (
                         <animated.div style={springs[index + 1]} key={data.id}>
-                            <Card key={data.id} className="max-w-full shadow-lg transition hover:bg-gray-100/75">
+                            <Card key={data.id} className="w-full shadow-lg transition hover:bg-gray-100/75">
                                 <CardHeader
                                     image={
                                         <img
@@ -128,8 +126,24 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                                             }}
                                         />
                                     }
-                                    header={<Text weight="semibold">{data.site_name}</Text>}
-                                    description={<Caption1>{data.webmaster_email || "NULL"}</Caption1>}
+                                    header={
+                                        <a href={data.site_url} rel={"noreferrer noopener"}
+                                           target={"_blank"} className={"font-bold transition hover:text-[#199910]"}>
+                                            {data.site_name}
+                                        </a>
+                                    }
+                                    description={
+                                        data.webmaster_email ? (
+                                            <a href={`mailto:${data.webmaster_email}`} rel={"noreferrer noopener"}
+                                               className={"transition line-clamp-1 w-64 text-gray-500 hover:text-gray-900 font-thin"}>
+                                                {data.webmaster_email || "NULL"}
+                                            </a>
+                                        ) : (
+                                            <div className={"line-clamp-1 w-64 text-gray-500 font-thin"}>
+                                                {data.webmaster_email || "NULL"}
+                                            </div>
+                                        )
+                                    }
                                     action={
                                         <Button
                                             appearance="transparent"
