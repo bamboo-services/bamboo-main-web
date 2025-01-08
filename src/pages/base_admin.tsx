@@ -32,10 +32,19 @@ import {useEffect, useState} from "react";
 import {Route, Routes, useLocation, useNavigate} from "react-router";
 import {AdminDashboard} from "./admin/admin_dashboard.tsx";
 import {AdminLink} from "./admin/admin_link.tsx";
+import {InfoUserAPI} from "../apis/api_info.ts";
+import {useDispatch} from "react-redux";
+import {setToaster} from "../stores/toaster_store.ts";
+import {ToastStore} from "../models/store/toast_stores.ts";
+import {animated, useSpring} from "@react-spring/web";
+import {easeQuadOut} from "d3-ease";
 
 export function BaseAdmin() {
     const location = useLocation();
     const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
     const [open, setOpen] = useState<boolean>(true);
     const [headerName, setHeaderName] = useState<string>("看板");
     const [menuInfo, setMenuInfo] = useState<string>("dashboard");
@@ -46,24 +55,52 @@ export function BaseAdmin() {
         }
     }, [location.pathname, navigate]);
 
+    useEffect(() => {
+        const func = async () => {
+            const getResp = await InfoUserAPI();
+            if (getResp?.output !== "Success") {
+                dispatch(setToaster({
+                    title: "提醒",
+                    message: getResp?.error_message,
+                    type: "info"
+                } as ToastStore));
+                navigate("/auth/login");
+            }
+        }
+
+        func().then();
+    }, [dispatch, navigate]);
+
+    const slideStyles = useSpring({
+        marginLeft: open ? 260 : 0,
+        config: {
+            duration: 200,
+            easing: easeQuadOut,
+        },
+    });
+
     return (
         <div className={"flex min-h-dvh"}>
             <SideNavComponent open={open} emit={setOpen} menuInfo={menuInfo}/>
             <div className={"p-8"}>
-                <div className={"flex items-center space-x-3"}>
-                    <button onClick={() => {
-                        setOpen(!open)
-                    }}>
-                        <Navigation24Filled/>
-                    </button>
-                    <div className={"text-2xl font-medium"}>{headerName}</div>
-                </div>
-                <div className={"pt-3"}>
-                    <Routes>
-                        <Route path={"dashboard"} element={<AdminDashboard headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
-                        <Route path={"link"} element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
-                    </Routes>
-                </div>
+                <animated.div style={slideStyles}>
+                    <div className={"flex items-center space-x-3"}>
+                        <button onClick={() => {
+                            setOpen(!open)
+                        }}>
+                            <Navigation24Filled/>
+                        </button>
+                        <div className={"text-2xl font-medium"}>{headerName}</div>
+                    </div>
+                    <div className={"pt-3"}>
+                        <Routes>
+                            <Route path={"dashboard"}
+                                   element={<AdminDashboard headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                            <Route path={"link"}
+                                   element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                        </Routes>
+                    </div>
+                </animated.div>
             </div>
         </div>
     );

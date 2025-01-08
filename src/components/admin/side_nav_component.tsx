@@ -34,13 +34,18 @@ import {
     NavDivider,
     NavDrawer,
     NavDrawerBody,
-    NavDrawerFooter,
     NavDrawerHeader,
     NavItem,
     NavSubItem,
     NavSubItemGroup,
 } from "@fluentui/react-nav-preview";
-import {Accessibility28Regular, Board20Regular, People20Regular,} from "@fluentui/react-icons";
+import {
+    Accessibility28Regular,
+    ArrowExit20Filled,
+    Board20Regular,
+    People20Regular,
+    Settings20Regular,
+} from "@fluentui/react-icons";
 import {Tooltip} from "@fluentui/react-components";
 import {useSelector} from "react-redux";
 import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
@@ -64,7 +69,7 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
     };
 
     return (
-        <div className={"flex min-h-dvh"}>
+        <div className={"flex fixed top-0 left-0 h-full"}>
             <NavDrawer
                 selectedValue={menuInfo}
                 selectedCategoryValue={menuInfo}
@@ -72,6 +77,7 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
                 open={open}
                 type={"inline"}
                 multiple={false}
+                className={"shadow-lg"}
             >
                 <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
                 <NavDrawerBody>
@@ -97,22 +103,15 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
                             <NavSubItem value="color">颜色管理</NavSubItem>
                         </NavSubItemGroup>
                     </NavCategory>
-                    <NavDivider/>
-                    <NavItem href={"/admin/dashboard"} icon={<Board20Regular className={"h-full"}/>} value="2">
+                    <NavItem onClick={() => navigate("/admin/setting")} icon={<Settings20Regular className={"h-full"}/>}
+                             value="setting">
                         设置
                     </NavItem>
-                    <NavItem href={"/admin/dashboard"} icon={<Board20Regular className={"h-full"}/>} value="3">
+                    <NavDivider/>
+                    <NavItem href={"/admin/dashboard"} icon={<ArrowExit20Filled className={"h-full"}/>} value="3">
                         退出
                     </NavItem>
                 </NavDrawerBody>
-                <NavDrawerFooter>
-                    <div>
-                        <span className="text-sm text-gray-500">Powered by</span>
-                        <a
-                            href="https://www.x-lf.com">d</a>
-                        <span className="text-sm text-gray-500">eveloper</span>
-                    </div>
-                </NavDrawerFooter>
             </NavDrawer>
         </div>
     );
