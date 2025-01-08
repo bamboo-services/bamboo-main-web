@@ -35,19 +35,28 @@ import {
     CardFooter,
     CardHeader,
     CardPreview,
+    SearchBox,
+    Select,
     Toolbar,
     ToolbarButton,
     ToolbarDivider
 } from "@fluentui/react-components";
-import {LinkDismissFilled, LinkFilled, PenRegular, TabGroupRegular} from "@fluentui/react-icons";
+import {
+    CheckmarkStarburstRegular,
+    LinkDismissFilled,
+    LinkFilled,
+    PenRegular,
+    TabGroupRegular
+} from "@fluentui/react-icons";
 import defaultBackground from "../../assets/images/default-background.webp";
-import {AdminGetLinkAPI} from "../../apis/api_link.ts";
+import {AdminGetLinkAPI, AdminGetLocationAPI} from "../../apis/api_link.ts";
 import {setToaster} from "../../stores/toaster_store.ts";
 import {ToastStore} from "../../models/store/toast_stores.ts";
 import {LinkGetAdminEntity} from "../../models/entity/link_get_admin_entity.ts";
 
 import noAvatar from "../../assets/images/no_avatar.png";
 import {animated, useSprings} from "@react-spring/web";
+import {LocationGetAdminEntity} from "../../models/entity/location_get_admin_entity.ts";
 
 export function AdminLink({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
@@ -58,6 +67,11 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
     const webInfo = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
     const [adminLinkList, setAdminLinkList] = useState<LinkGetAdminEntity>({total: 0} as LinkGetAdminEntity);
+    const [adminLocationList, setAdminLocationList] = useState<LocationGetAdminEntity>({} as LocationGetAdminEntity);
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [searchLocation, setSearchLocation] = useState<string>("");
+    const [currentPage, setCurrentPage] = useState(1); // 当前页码
+    const itemsPerPage = 10; // 每页展示数量
 
     document.title = `友链 | ${webInfo.site.site_name}`
 
@@ -82,7 +96,46 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
         func().then();
     }, [dispatch]);
 
-    const [springs] = useSprings(adminLinkList.total + 1, (index: number) => ({
+    useEffect(() => {
+        const func = async () => {
+            const getResp = await AdminGetLocationAPI();
+            if (getResp?.output === "Success") {
+                setAdminLocationList(getResp.data!);
+            } else {
+                dispatch(setToaster({
+                    title: getResp?.message,
+                    message: getResp?.error_message,
+                    type: "error"
+                } as ToastStore));
+            }
+        }
+        func().then();
+    }, [dispatch]);
+
+    const getLinkDO = () => {
+        return adminLinkList?.links?.filter(data => {
+            if (searchLocation === "" || searchLocation === null) {
+                return true;
+            } else {
+                return data.location.toString() === searchLocation;
+            }
+        }).filter(data => {
+            if (searchValue === "" || searchValue === null) {
+                return true;
+            } else {
+                return data.site_name.includes(searchValue) || data.site_url.includes(searchValue) || data.webmaster_email.includes(searchValue) || data.site_description.includes(searchValue);
+            }
+        }) || [];
+    }
+
+    const totalPages = Math.ceil(getLinkDO().length / itemsPerPage);
+    // 获取当前页数据
+    const paginatedData = getLinkDO().slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const [springs] = useSprings(paginatedData.length + 2 || 2, (index: number) => ({
         opacity: 1,
         transform: "translateY(0)",
         from: {opacity: 0, transform: "translateY(20px)"},
@@ -99,6 +152,10 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                         添加友链
                     </ToolbarButton>
                     <ToolbarButton appearance={"subtle"}
+                                   icon={<CheckmarkStarburstRegular fontSize={24}/>}>
+                        友链审核
+                    </ToolbarButton>
+                    <ToolbarButton appearance={"subtle"}
                                    icon={<TabGroupRegular fontSize={24}/>}>
                         友链组管理
                     </ToolbarButton>
@@ -107,11 +164,25 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                                    icon={<LinkDismissFilled fontSize={24}/>}>
                         检查失效友链
                     </ToolbarButton>
+                    <ToolbarDivider/>
+                    <div className={"hidden lg:block"}>
+                        <Select onChange={(_, data) => {
+                            setSearchLocation(data.value);
+                        }}>
+                            <option value={""}>全部</option>
+                            {adminLocationList?.locations?.map((data) => (
+                                <option key={data.id} value={data.id}>{data.display_name}</option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div className={"hidden lg:block"}>
+                        <SearchBox onChange={(_, data) => setSearchValue(data.value)} value={searchValue}/>
+                    </div>
                 </Toolbar>
             </div>
-            <div className={"col-span-9"}>
-                <div className={"grid grid-cols-2 gap-3"}>
-                    {adminLinkList.total !== 0 ? adminLinkList?.links?.map((data, index) => (
+            <div className={"col-span-full lg:col-span-9"}>
+                <div className={"grid grid-cols-1 lg:grid-cols-2 gap-3"}>
+                    {adminLinkList.total !== 0 ? paginatedData.map((data, index) => (
                         <animated.div style={springs[index + 1]} key={data.id}>
                             <Card key={data.id} className="w-full shadow-lg transition hover:bg-gray-100/75">
                                 <CardHeader
@@ -139,8 +210,8 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                                                 {data.webmaster_email || "NULL"}
                                             </a>
                                         ) : (
-                                            <div className={"line-clamp-1 w-64 text-gray-500 font-thin"}>
-                                                {data.webmaster_email || "NULL"}
+                                            <div className={"line-clamp-1 w-64 text-white font-thin"}>
+                                                NULL
                                             </div>
                                         )
                                     }
@@ -158,18 +229,99 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                             </Card>
                         </animated.div>
                     )) : "暂时没有友链呢"}
+                    <animated.div style={springs[paginatedData.length + 1]}
+                                  className="col-span-full justify-center items-center mt-4 flex">
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="transition px-4 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                        >
+                            上一页
+                        </button>
+                        <div className="flex">
+                            {Array.from({length: totalPages}, (_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`transition px-3 py-1 mx-1 rounded ${
+                                        currentPage === i + 1 ? "bg-[#1C8912] text-white" : "bg-gray-200"
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="transition px-4 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                        >
+                            下一页
+                        </button>
+                    </animated.div>
                 </div>
             </div>
-            <animated.div className={"col-span-3"} style={springs[0]}>
-                <Card className={"m-auto w-full shadow-md"}>
+            <animated.div className={"lg:col-span-3 hidden lg:block"} style={springs[0]}>
+                <Card className={"m-auto w-full shadow-md rounded-lg bg-white"}>
                     <CardPreview>
                         <img
+                            className="rounded-t-lg object-cover w-full h-36"
                             src={defaultBackground}
-                            alt="Preview of a Word document: About Us - Overview"
+                            alt="背景图"
                         />
                     </CardPreview>
-                    <CardFooter className={"grid"}>
-                        <div className={"text-lg font-bold"}>友链信息</div>
+                    <CardHeader
+                        header={<div className="text-xl font-bold text-gray-800">友链状态</div>}
+                        description={<div className="text-sm text-gray-500">概览统计信息</div>}
+                    />
+                    <CardFooter>
+                        <div className={"grid gap-3 px-4 py-3"}>
+                            <div className="grid grid-cols-2 text-gray-700">
+                                <span className="font-medium">总链接数</span>
+                                <span
+                                    className="text-right font-bold text-blue-600">{adminLinkList.total || 0} 个</span>
+                            </div>
+                            <div className="grid grid-cols-2 text-gray-700">
+                                <span className="font-medium">待审核数</span>
+                                <span className="text-right font-bold text-blue-600">
+                                    {adminLinkList?.links?.filter(link => link.status === 0).length} 个
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 text-gray-700">
+                                <span className="font-medium">最近添加</span>
+                                <span className="text-right font-bold text-blue-600">
+                                    {adminLinkList?.links?.filter(link => {
+                                        const createdAt = new Date(link.created_at);
+                                        const today = new Date();
+                                        return (
+                                            createdAt.getFullYear() === today.getFullYear() &&
+                                            createdAt.getMonth() === today.getMonth() &&
+                                            createdAt.getDate() === today.getDate()
+                                        );
+                                    }).length} 个
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 text-gray-700">
+                                <span className="font-medium">最近修改</span>
+                                <span className="text-right font-bold text-blue-600">
+                                    {adminLinkList?.links?.filter(link => {
+                                        const updatedAt = new Date(link.updated_at);
+                                        const today = new Date();
+                                        return (
+                                            updatedAt.getFullYear() === today.getFullYear() &&
+                                            updatedAt.getMonth() === today.getMonth() &&
+                                            updatedAt.getDate() === today.getDate()
+                                        );
+                                    }).length} 个
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 text-gray-700">
+                                <span className="font-medium">已删除</span>
+                                <span className="text-right font-bold text-blue-600">
+                                    {adminLinkList?.links?.filter(link => link.deleted_at !== null).length} 个
+                                </span>
+                            </div>
+                        </div>
                     </CardFooter>
                 </Card>
             </animated.div>

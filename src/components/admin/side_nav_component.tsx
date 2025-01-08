@@ -43,6 +43,7 @@ import {
     Accessibility28Regular,
     ArrowExit20Filled,
     Board20Regular,
+    GiftCard20Regular,
     People20Regular,
     Settings20Regular,
 } from "@fluentui/react-icons";
@@ -103,6 +104,10 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
                             <NavSubItem value="color">颜色管理</NavSubItem>
                         </NavSubItemGroup>
                     </NavCategory>
+                    <NavItem onClick={() => navigate("/admin/sponsor")} icon={<GiftCard20Regular className={"h-full"}/>}
+                             value="sponsor">
+                        赞助
+                    </NavItem>
                     <NavItem onClick={() => navigate("/admin/setting")} icon={<Settings20Regular className={"h-full"}/>}
                              value="setting">
                         设置

@@ -36,7 +36,7 @@ import {InfoUserAPI} from "../apis/api_info.ts";
 import {useDispatch} from "react-redux";
 import {setToaster} from "../stores/toaster_store.ts";
 import {ToastStore} from "../models/store/toast_stores.ts";
-import {animated, useSpring} from "@react-spring/web";
+import {animated, useSpring, useTransition} from "@react-spring/web";
 import {easeQuadOut} from "d3-ease";
 
 export function BaseAdmin() {
@@ -71,12 +71,23 @@ export function BaseAdmin() {
         func().then();
     }, [dispatch, navigate]);
 
+    // 侧滑菜单的动画
     const slideStyles = useSpring({
         marginLeft: open ? 260 : 0,
         config: {
             duration: 200,
             easing: easeQuadOut,
         },
+    });
+
+    // 路由切换的动画
+    const transitions = useTransition(location, {
+        from: {opacity: 0, transform: "translateX(20px)"},
+        enter: {
+            opacity: 1,
+            transform: "translateX(0)",
+            config: {tension: 250, friction: 26},
+        }
     });
 
     return (
@@ -93,12 +104,18 @@ export function BaseAdmin() {
                         <div className={"text-2xl font-medium"}>{headerName}</div>
                     </div>
                     <div className={"pt-3"}>
-                        <Routes>
-                            <Route path={"dashboard"}
-                                   element={<AdminDashboard headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
-                            <Route path={"link"}
-                                   element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
-                        </Routes>
+                        {transitions((style, item) => (
+                            <animated.div style={style}>
+                                <Routes location={item}>
+                                    <Route
+                                        path={"dashboard"}
+                                        element={<AdminDashboard headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                    <Route
+                                        path={"link"}
+                                        element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                </Routes>
+                            </animated.div>
+                        ))}
                     </div>
                 </animated.div>
             </div>
