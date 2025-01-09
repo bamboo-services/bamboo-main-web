@@ -61,7 +61,9 @@ const UserLoginAPI = async (
  * @param data 请求体数据
  * @returns Promise<BaseResponse<null>>
  */
-const UserChangePasswordAPI = async (data: AuthChangePasswordDTO): Promise<BaseResponse<null> | undefined> => {
+const UserChangePasswordAPI = async (
+    data: AuthChangePasswordDTO
+): Promise<BaseResponse<null> | undefined> => {
     return BaseApi(
         MethodType.PUT,
         "/api/v1/user/change-password",

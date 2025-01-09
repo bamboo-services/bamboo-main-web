@@ -57,12 +57,14 @@ import {LinkGetAdminEntity} from "../../models/entity/link_get_admin_entity.ts";
 import noAvatar from "../../assets/images/no_avatar.png";
 import {animated, useSprings} from "@react-spring/web";
 import {LocationGetAdminEntity} from "../../models/entity/location_get_admin_entity.ts";
+import {useNavigate} from "react-router";
 
 export function AdminLink({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
     menuEmit: (data: string) => void
 }>) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const webInfo = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
@@ -147,7 +149,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
         <div className={"grid grid-cols-12 gap-3 border-t"}>
             <div className={"col-span-full border-b py-1"}>
                 <Toolbar className={"flex gap-1"}>
-                    <ToolbarButton appearance={"primary"}
+                    <ToolbarButton appearance={"primary"} onClick={() => {navigate("/admin/link/add")}}
                                    icon={<LinkFilled fontSize={24}/>}>
                         添加友链
                     </ToolbarButton>

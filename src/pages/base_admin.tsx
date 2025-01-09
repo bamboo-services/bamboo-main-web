@@ -38,6 +38,7 @@ import {setToaster} from "../stores/toaster_store.ts";
 import {ToastStore} from "../models/store/toast_stores.ts";
 import {animated, useSpring, useTransition} from "@react-spring/web";
 import {easeQuadOut} from "d3-ease";
+import {AdminLinkAdd} from "./admin/admin_link_add.tsx";
 
 export function BaseAdmin() {
     const location = useLocation();
@@ -93,7 +94,7 @@ export function BaseAdmin() {
     return (
         <div className={"flex min-h-dvh"}>
             <SideNavComponent open={open} emit={setOpen} menuInfo={menuInfo}/>
-            <div className={"p-8"}>
+            <div className={"p-8 w-full"}>
                 <animated.div style={slideStyles}>
                     <div className={"flex items-center space-x-3"}>
                         <button onClick={() => {
@@ -113,6 +114,15 @@ export function BaseAdmin() {
                                     <Route
                                         path={"link"}
                                         element={<AdminLink headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                    <Route
+                                        path={"link/add"}
+                                        element={<AdminLinkAdd headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                    <Route
+                                        path={"sponsor"}
+                                        element={<div>赞助</div>}/>
+                                    <Route
+                                        path={"setting"}
+                                        element={<div>设置</div>}/>
                                 </Routes>
                             </animated.div>
                         ))}
