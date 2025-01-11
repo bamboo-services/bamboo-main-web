@@ -102,7 +102,7 @@ export function HeaderComponent() {
                 </div>
             </header>
             {/* 手机菜单样式 */}
-            <div className={"fixed md:hidden w-lvw bottom-0 left-0 p-3 bg-white"}>
+            <div className={"fixed md:hidden w-lvw bottom-0 left-0 p-3 bg-white z-50"}>
                 <div className={"flex items-center justify-center"}>
                     <nav className="grid grid-cols-4 gap-3 w-full" aria-label="Tabs">
                         <Link to={"/"}
@@ -110,17 +110,17 @@ export function HeaderComponent() {
                             <HomeRegular />
                             <span>首页</span>
                         </Link>
-                        <Link to={"/me/about"}
-                              className={`transition shrink-0 rounded-lg flex items-center justify-center gap-1 ${SelectColorForPhone("about")}`}>
+                        <Link to={"/about/me"}
+                              className={`transition shrink-0 rounded-lg flex items-center justify-center gap-1 ${SelectColorForPhone("me")}`}>
                             <PersonRegular />
                             <span>关于我</span>
                         </Link>
-                        <Link to={"/me/friends"}
+                        <Link to={"/about/friends"}
                               className={`transition shrink-0 rounded-lg flex items-center justify-center gap-1 ${SelectColorForPhone("friends")}`}>
                             <LinkMultipleRegular />
                             <span>友链</span>
                         </Link>
-                        <Link to={"/me/other"}
+                        <Link to={"/about/other"}
                               className={`transition shrink-0 rounded-lg flex items-center justify-center gap-1 ${SelectColorForPhone("other")}`}>
                             <AppsRegular />
                             <span>其他</span>

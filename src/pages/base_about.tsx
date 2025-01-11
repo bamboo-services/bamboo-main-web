@@ -52,10 +52,10 @@ export function BaseAbout() {
     });
 
     return (
-        <>
-            <animated.div style={spring} className="w-full h-full fixed bottom-0 left-0 overflow-hidden">
+        <div className={"overflow-y-hidden"}>
+            <animated.div style={spring} className="w-full h-full fixed bottom-0 left-0">
                 <img
-                    src="https://i-cdn.akass.cn/2024/01/659d0941af288.jpg!wp60"
+                    src="https://i-cdn.akass.cn/2024/01/659d0941af288.jpg!wp"
                     alt=""
                     className="w-full h-full object-cover blur-lg opacity-40"
                     draggable={"false"}
@@ -65,7 +65,7 @@ export function BaseAbout() {
                 <div className={"col-span-12"}>
                     <HeaderComponent/>
                 </div>
-                <div className={"col-span-12 p-4 pb-20 md:p-10 w-lvw md:flex md:justify-center"}>
+                <div className={"col-span-12 p-4 pb-20 md:p-10 md:flex md:justify-center"}>
                     <div className={"md:w-10/12 lg:w-8/12 xl:max-w-screen-xl"}>
                         {transitions((style, item) => (
                             <animated.div style={style}>
@@ -78,6 +78,6 @@ export function BaseAbout() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

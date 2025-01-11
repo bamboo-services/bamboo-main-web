@@ -47,7 +47,6 @@ export function AboutFriends() {
     const [getLink, setGetLink] = useState({} as LinkGetEntity);
     const [webReveal, setWebReveal] = useState([] as JSX.Element[]);
 
-    // 使用 useSprings 生成每个元素的动画
     const [springs] = useSprings(webReveal.length, (index: number) => ({
         opacity: 1,
         transform: "translateY(0)",
@@ -69,7 +68,7 @@ export function AboutFriends() {
                 } as ToastStore));
             }
         }, 1);
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         try {
