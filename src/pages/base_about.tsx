@@ -30,6 +30,7 @@ import {Route, Routes, useLocation} from "react-router";
 import {HeaderComponent} from "../components/about/header_component.tsx";
 import {animated, useSpring, useTransition} from "@react-spring/web";
 import {AboutMe} from "./about/about_me.tsx";
+import {AboutFriends} from "./about/about_friends.tsx";
 
 export function BaseAbout() {
     const location = useLocation();
@@ -70,7 +71,7 @@ export function BaseAbout() {
                             <animated.div style={style}>
                                 <Routes location={item}>
                                     <Route path={"/me"} element={<AboutMe/>}/>
-                                    <Route path={"/friends"} element={<div>好友</div>}/>
+                                    <Route path={"/friends"} element={<AboutFriends/>}/>
                                 </Routes>
                             </animated.div>
                         ))}

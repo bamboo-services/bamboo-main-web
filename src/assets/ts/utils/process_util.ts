@@ -26,25 +26,33 @@
  * --------------------------------------------------------------------------------
  */
 
-import { MailRegular, PersonRegular } from "@fluentui/react-icons";
-import {useSelector} from "react-redux";
-import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
+import React from "react";
 
-export function AboutMe() {
-    const webInfo = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
+export class Util {
+    /**
+     * TwoUrlSelectNoEmpty
+     *
+     * 在两个连接中，选择一个有的链接进行返回，若存入的两个链接都存在，则返回 {@link target} 的内容；
+     * 若 {@link target} 不存在，则默认返回 source 的内容（即使 source 的内容为空）；
+     *
+     * @param source 源地址
+     * @param target 目标地址
+     * @returns string 返回存在的地址
+     */
+    public static TwoUrlSelectNoEmpty(source: string, target: string): string {
+        if (source === '' || source == undefined) {
+            return target;
+        } else {
+            return source;
+        }
+    }
 
-    document.title = `${webInfo.site.site_name} | 关于我`;
-
-    return (
-        <div className={"grid grid-cols-12 gap-3"}>
-            <div className={"col-span-full items-center text-2xl lg:text-3xl font-bold flex gap-1"}>
-                <PersonRegular />
-                <span>关于我</span>
-            </div>
-            <div className={"col-span-full items-center text-xl flex gap-1"}>
-                <MailRegular />
-                <span>联系方式</span>
-            </div>
-        </div>
-    );
+    // Util 类中的 handleInputChange 方法
+    public static handleInputChange<T>(getData: T, event: React.ChangeEvent<any>): T {
+        const {id, value, type, checked} = event.target;
+        // 对于复选框，使用 checked 属性；对于其他输入，使用 value 属性
+        const updatedValue = type === "checkbox" ? checked : value;
+        // 返回一个新的状态对象，其中只更新了触发更改的字段
+        return {...getData, [id]: updatedValue};
+    }
 }

@@ -37,7 +37,7 @@ import {useDispatch} from "react-redux";
 import {setToaster} from "../stores/toaster_store.ts";
 import {ToastStore} from "../models/store/toast_stores.ts";
 import {animated, useSpring, useTransition} from "@react-spring/web";
-//import {easeQuadOut} from "d3-ease";
+import {easeQuadOut} from "d3-ease";
 import {AdminLinkAdd} from "./admin/admin_link_add.tsx";
 import {AdminSponsor} from "./admin/admin_sponsor.tsx";
 
@@ -78,7 +78,7 @@ export function BaseAdmin() {
         marginLeft: open ? 260 : 0,
         config: {
             duration: 200,
-            //easing: easeQuadOut,
+            easing: easeQuadOut,
         },
     });
 
