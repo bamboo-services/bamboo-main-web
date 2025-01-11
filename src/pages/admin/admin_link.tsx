@@ -141,7 +141,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
         opacity: 1,
         transform: "translateY(0)",
         from: {opacity: 0, transform: "translateY(20px)"},
-        delay: index * 50,
+        delay: index * 25,
         config: {tension: 170, friction: 26},
     }));
 
@@ -267,7 +267,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                 <Card className={"m-auto w-full shadow-md rounded-lg bg-white"}>
                     <CardPreview>
                         <img
-                            className="rounded-t-lg object-cover w-full h-36"
+                            className="object-cover w-full h-36"
                             src={defaultBackground}
                             alt="背景图"
                         />

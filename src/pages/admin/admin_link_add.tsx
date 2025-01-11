@@ -27,10 +27,23 @@
  */
 
 import {useSelector} from "react-redux";
-import { SystemInfoEntity } from "../../models/entity/system_info_entity";
+import {SystemInfoEntity} from "../../models/entity/system_info_entity";
 
 import {useEffect, useState} from "react";
-import {Button, Divider, Input, Select, Textarea} from "@fluentui/react-components";
+import {
+    Button,
+    Card, CardFooter,
+    CardHeader,
+    CardPreview,
+    Divider,
+    Input,
+    Label,
+    Select,
+    Textarea
+} from "@fluentui/react-components";
+import {useSprings, animated} from "@react-spring/web";
+import {LinkAddAdminDTO} from "../../models/dto/link_add_admin.ts";
+import defaultBackground from "../../assets/images/default-background.webp";
 
 export function AdminLinkAdd({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
@@ -38,19 +51,7 @@ export function AdminLinkAdd({headerEmit, menuEmit}: Readonly<{
 }>) {
     const webInfoStore = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
-    const [formData, setFormData] = useState({
-        email: "",
-        serviceProvider: "",
-        siteName: "",
-        siteUrl: "",
-        siteLogo: "",
-        siteRss: "",
-        siteDescription: "",
-        location: "",
-        color: "",
-        hasAdv: "否",
-        remark: "",
-    });
+    const [linkAddAdminDTO, setLinkAddAdminDTO] = useState<LinkAddAdminDTO>({} as LinkAddAdminDTO);
 
     document.title = `添加友链 | ${webInfoStore.site.site_name}`;
 
@@ -59,12 +60,8 @@ export function AdminLinkAdd({headerEmit, menuEmit}: Readonly<{
         menuEmit("link");
     }, [headerEmit, menuEmit]);
 
-    const handleChange = (field: string, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-    };
-
     const handleSubmit = () => {
-        console.log("提交表单数据：", formData);
+        console.log("提交表单数据：", linkAddAdminDTO);
         // 提交逻辑
     };
 
@@ -73,137 +70,239 @@ export function AdminLinkAdd({headerEmit, menuEmit}: Readonly<{
         // 取消逻辑
     };
 
+    //16
+    const [springs] = useSprings(16, (index: number) => ({
+        opacity: 1,
+        transform: "translateY(0)",
+        from: {opacity: 0, transform: "translateY(20px)"},
+        delay: index * 25,
+        config: {tension: 170, friction: 26},
+    }));
+
     return (
         <div className="grid grid-cols-12 gap-3">
             <div className="col-span-12 lg:col-span-9 grid grid-cols-12 gap-4">
-                <div className="col-span-12">
-                    <Divider>站点配置</Divider>
-                </div>
-                <div className="col-span-6">
-                    <Input
-                        placeholder="请输入站长邮箱"
-                        value={formData.email}
-                        onChange={(_, data) => handleChange("email", data.value)}
-                    />
-                </div>
-                <div className="col-span-6">
-                    <Input
-                        placeholder="请输入服务提供商"
-                        value={formData.serviceProvider}
-                        onChange={(_, data) => handleChange("serviceProvider", data.value)}
-                    />
-                </div>
-
-                {/* 站点信息 */}
-                <div className="col-span-12 mt-4">
+                <animated.div className="col-span-12" style={springs[1]}>
                     <Divider>站点信息</Divider>
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[2]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>站长邮箱</span>
+                    </Label>
                     <Input
-                        placeholder="请输入站点名字"
-                        required
-                        value={formData.siteName}
-                        onChange={(_, data) => handleChange("siteName", data.value)}
+                        className={"w-full"}
+                        placeholder="请输入站长邮箱"
+                        size={"large"}
+                        value={linkAddAdminDTO.webmaster_email}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, webmaster_email: data.value})
+                        }}
                     />
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[3]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>服务提供商</span>
+                    </Label>
                     <Input
+                        className={"w-full"}
+                        placeholder="请输入服务提供商"
+                        size={"large"}
+                        value={linkAddAdminDTO.service_provider}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, service_provider: data.value})
+                        }}
+                    />
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[4]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>站点名字</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
+                    <Input
+                        className={"w-full"}
+                        placeholder="请输入站点名字"
+                        size={"large"}
+                        value={linkAddAdminDTO.site_name}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, site_name: data.value})
+                        }}
+                        required
+                    />
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[5]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>站点地址</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
+                    <Input
+                        className={"w-full"}
                         placeholder="请输入站点地址"
                         required
-                        value={formData.siteUrl}
-                        onChange={(_, data) => handleChange("siteUrl", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.site_url}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, site_url: data.value})
+                        }}
                     />
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[6]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>站点图标</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
                     <Input
+                        className={"w-full"}
                         placeholder="请输入图标地址"
-                        value={formData.siteLogo}
-                        onChange={(_, data) => handleChange("siteLogo", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.site_logo}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, site_logo: data.value})
+                        }}
                     />
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[7]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>订阅地址</span>
+                    </Label>
                     <Input
+                        className={"w-full"}
                         placeholder="请输入订阅地址"
-                        value={formData.siteRss}
-                        onChange={(_, data) => handleChange("siteRss", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.site_rss_url}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, site_rss_url: data.value})
+                        }}
                     />
-                </div>
-                <div className="col-span-12">
+                </animated.div>
+                <animated.div className="col-span-12" style={springs[8]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>站点描述</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
                     <Textarea
+                        className={"w-full"}
                         placeholder="请输入站点描述"
-                        value={formData.siteDescription}
-                        onChange={(_, data) => handleChange("siteDescription", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.site_description}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, site_description: data.value})
+                        }}
                     />
-                </div>
+                </animated.div>
 
-                {/* 位置管理 */}
-                <div className="col-span-12 mt-4">
+                <animated.div className="col-span-12 mt-4" style={springs[9]}>
                     <Divider>位置管理</Divider>
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[10]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>展示位置</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
                     <Select
+                        className={"w-full"}
                         required
-                        value={formData.location}
-                        onChange={(_, data) => handleChange("location", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.location}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, location: Number(data.value)})
+                        }}
                     >
                         <option value="">请选择位置</option>
                         <option value="1">顶部</option>
                         <option value="2">侧边栏</option>
                         <option value="3">底部</option>
                     </Select>
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[11]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>选择展示颜色</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
                     <Select
+                        className={"w-full"}
                         required
-                        value={formData.color}
-                        onChange={(_, data) => handleChange("color", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.color}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, color: Number(data.value)})
+                        }}
                     >
-                        <option value="">请选择颜色</option>
+                        <option value="">默认</option>
                         <option value="1">红色</option>
                         <option value="2">蓝色</option>
                         <option value="3">绿色</option>
                     </Select>
-                </div>
-                <div className="col-span-6">
+                </animated.div>
+                <animated.div className="col-span-6" style={springs[12]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>是否有广告</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </Label>
                     <Select
+                        className={"w-full"}
                         required
-                        value={formData.hasAdv}
-                        onChange={(_, data) => handleChange("hasAdv", data.value)}
+                        size={"large"}
+                        value={String(linkAddAdminDTO.has_adv)}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, has_adv: Boolean(data.value)})
+                        }}
                     >
-                        <option value="否">否</option>
-                        <option value="是">是</option>
+                        <option value={"0"}>否</option>
+                        <option value={"1"}>是</option>
                     </Select>
-                </div>
+                </animated.div>
 
-                <div className="col-span-12 mt-4">
+                <animated.div className="col-span-12 mt-4" style={springs[13]}>
                     <Divider>其他信息</Divider>
-                </div>
-                <div className="col-span-12">
+                </animated.div>
+                <animated.div className="col-span-12" style={springs[14]}>
+                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
+                        <span>备注</span>
+                    </Label>
                     <Textarea
+                        className={"w-full"}
                         placeholder="请输入备注信息"
-                        value={formData.remark}
-                        onChange={(_, data) => handleChange("remark", data.value)}
+                        size={"large"}
+                        value={linkAddAdminDTO.remark}
+                        onChange={(_, data) => {
+                            setLinkAddAdminDTO({...linkAddAdminDTO, remark: data.value})
+                        }}
                     />
-                </div>
+                </animated.div>
             </div>
 
-            <div className="col-span-12 lg:col-span-3 flex flex-col justify-start items-stretch gap-4">
-                <div className="bg-white rounded-lg shadow-md p-4">
-                    <div className="text-lg font-bold mb-2">操作</div>
-                    <Button
-                        appearance="outline"
-                        onClick={handleCancel}
-                    >
-                        取消修改
-                    </Button>
-                    <Button
-                        appearance="primary"
-                        onClick={handleSubmit}
-                    >
-                        确认修改
-                    </Button>
-                </div>
-            </div>
+            <animated.div className={"lg:col-span-3 hidden lg:block"} style={springs[0]}>
+                <Card className={"m-auto w-full shadow-md rounded-md bg-white"}>
+                    <CardPreview>
+                        <img
+                            className="object-cover w-full h-36"
+                            src={defaultBackground}
+                            alt="背景图"
+                        />
+                    </CardPreview>
+                    <CardHeader
+                        header={<div className="text-xl font-bold text-gray-800">操作</div>}
+                    />
+                    <CardFooter>
+                        <div className={"flex justify-between gap-3 w-full"}>
+                            <Button
+                                appearance="outline"
+                                size={"large"}
+                                onClick={handleCancel}
+                            >
+                                取消修改
+                            </Button>
+                            <Button
+                                appearance="primary"
+                                size={"large"}
+                                onClick={handleSubmit}
+                            >
+                                确认修改
+                            </Button>
+                        </div>
+                    </CardFooter>
+                </Card>
+            </animated.div>
         </div>
     );
 }

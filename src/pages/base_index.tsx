@@ -66,7 +66,7 @@ export function BaseIndex() {
                             >
                                 去我的博客吧
                             </Link>
-                            <Link to={"/about/about"}
+                            <Link to={"/about/me"}
                                   className={"transition block rounded bg-green-500 px-12 py-3 text-sm font-medium text-white hover:bg-green-600 focus:outline-none focus:ring sm:w-auto shadow-xl shadow-green-500/55"}>
                                 了解我的更多
                             </Link>
