@@ -28,12 +28,29 @@
 
 import {useSelector} from "react-redux";
 import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
-import {Card, CardFooter, CardHeader, CardPreview, Toolbar, ToolbarButton} from "@fluentui/react-components";
-import {LinkFilled} from "@fluentui/react-icons";
+import {
+    Card,
+    CardFooter,
+    CardHeader,
+    CardPreview,
+    createTableColumn,
+    DataGrid,
+    DataGridBody,
+    DataGridCell,
+    DataGridHeader,
+    DataGridHeaderCell,
+    DataGridRow,
+    TableCellLayout,
+    TableColumnDefinition,
+    Toolbar,
+    ToolbarButton
+} from "@fluentui/react-components";
+import {DocumentRegular, LinkFilled} from "@fluentui/react-icons";
 import {useNavigate} from "react-router";
 import {useEffect} from "react";
 import defaultBackground from "../../assets/images/default-background.webp";
 import {animated, useSprings} from "@react-spring/web";
+import {DataGridItemModule} from "../../models/modules/data_grid_item_module.ts";
 
 export function AdminSponsor({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
@@ -41,6 +58,111 @@ export function AdminSponsor({headerEmit, menuEmit}: Readonly<{
 }>) {
     const navigate = useNavigate();
     const webInfoStore = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
+
+    const items: DataGridItemModule[] = [
+        {
+            id: "1",
+            sponsor: {label: "shiro's Alley", icon: <DocumentRegular/>},
+            type: "支付宝",
+            money: 100.20,
+            lastUpdated: "2024-09-30 23:59:59",
+        },
+        {
+            id: "2",
+            sponsor: {label: "shiro's Alley", icon: <DocumentRegular/>},
+            type: "支付宝",
+            money: 10.20,
+            lastUpdated: "2024-09-30 23:59:59",
+        },
+        {
+            id: "3",
+            sponsor: {label: "shiro's Alley", icon: <DocumentRegular/>},
+            type: "支付宝",
+            money: 100,
+            lastUpdated: "2024-09-30 23:59:59",
+        },
+        {
+            id: "4",
+            sponsor: {label: "shiro's Alley", icon: <DocumentRegular/>},
+            type: "支付宝",
+            money: 23.22,
+            lastUpdated: "2024-09-30 23:59:59",
+        },
+        {
+            id: "5",
+            sponsor: {label: "shiro's Alley", icon: <DocumentRegular/>},
+            type: "微信",
+            money: 100.20,
+            lastUpdated: "2024-09-30 23:59:59",
+        },
+    ];
+
+    const columns: TableColumnDefinition<DataGridItemModule>[] = [
+        createTableColumn<DataGridItemModule>({
+            columnId: "sponsor",
+            compare: (a, b) => {
+                return a.sponsor.label.localeCompare(b.sponsor.label);
+            },
+            renderHeaderCell: () => "赞助者",
+            renderCell: (item) => {
+                return (
+                    <TableCellLayout media={item.sponsor.icon}>
+                        {item.sponsor.label}
+                    </TableCellLayout>
+                );
+            },
+        }),
+        createTableColumn<DataGridItemModule>({
+            columnId: "type",
+            compare: (a, b) => {
+                return a.type.localeCompare(b.type);
+            },
+            renderHeaderCell: () => "方式",
+            renderCell: (item) => {
+                return (
+                    <TableCellLayout>
+                        {item.type}
+                    </TableCellLayout>
+                );
+            },
+        }),
+        createTableColumn<DataGridItemModule>({
+            columnId: "money",
+            compare: (a, b) => {
+                return a.money - b.money;
+            },
+            renderHeaderCell: () => "赞助金额",
+            renderCell: (item) => {
+                return (
+                    <TableCellLayout>
+                        ¥ {item.money}
+                    </TableCellLayout>
+                );
+            },
+        }),
+        createTableColumn<DataGridItemModule>({
+            columnId: "lastUpdate",
+            compare: (a, b) => {
+                return a.lastUpdated.localeCompare(b.lastUpdated);
+            },
+            renderHeaderCell: () => "赞助金额",
+            renderCell: (item) => {
+                return item.lastUpdated;
+            },
+        }),
+        createTableColumn<DataGridItemModule>({
+            columnId: "operate",
+            renderHeaderCell: () => "操作",
+            renderCell: () => {
+                return (
+                    <TableCellLayout>
+                        操作
+                    </TableCellLayout>
+                );
+            },
+        }),
+    ];
+
 
     document.title = `赞助 | ${webInfoStore.site.site_name}`;
 
@@ -67,9 +189,43 @@ export function AdminSponsor({headerEmit, menuEmit}: Readonly<{
                     </ToolbarButton>
                 </Toolbar>
             </div>
-            <div className={"col-span-full lg:col-span-9 grid"}>
-                2345678
-            </div>
+            <animated.div className={"col-span-full lg:col-span-9 grid"} style={springs[1]}>
+                <DataGrid
+                    items={items}
+                    columns={columns}
+                    sortable
+                    selectionMode="multiselect"
+                    getRowId={(item) => item.id}
+                    focusMode="composite"
+                    style={{minWidth: "550px"}}
+                >
+                    <DataGridHeader>
+                        <DataGridRow
+                            selectionCell={{
+                                checkboxIndicator: {"aria-label": "Select all rows"},
+                            }}
+                        >
+                            {({renderHeaderCell}) => (
+                                <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                            )}
+                        </DataGridRow>
+                    </DataGridHeader>
+                    <DataGridBody<DataGridItemModule>>
+                        {({item, rowId}) => (
+                            <DataGridRow<DataGridItemModule>
+                                key={rowId}
+                                selectionCell={{
+                                    checkboxIndicator: {"aria-label": "Select row"},
+                                }}
+                            >
+                                {({renderCell}) => (
+                                    <DataGridCell>{renderCell(item)}</DataGridCell>
+                                )}
+                            </DataGridRow>
+                        )}
+                    </DataGridBody>
+                </DataGrid>
+            </animated.div>
             <animated.div className={"lg:col-span-3 hidden lg:block"} style={springs[0]}>
                 <Card className={"m-auto w-full shadow-md rounded-lg bg-white"}>
                     <CardPreview>

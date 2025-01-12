@@ -92,7 +92,7 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
                     </AppItem>
                     <NavItem onClick={() => navigate("/admin/dashboard")} icon={<Board20Regular className={"h-full"}/>}
                              value="dashboard">
-                        首页
+                        看板
                     </NavItem>
                     <NavCategory value="friends">
                         <NavCategoryItem icon={<People20Regular className={"h-full"}/>}>

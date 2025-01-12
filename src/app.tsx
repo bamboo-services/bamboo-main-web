@@ -38,6 +38,7 @@ import {InfoAPI} from "./apis/api_info.ts";
 import {setWebInfo} from "./stores/web_info_store.ts";
 import {BaseAdmin} from "./pages/base_admin.tsx";
 import {BaseAbout} from "./pages/base_about.tsx";
+import {Demo} from "./pages/demo.tsx";
 
 export function App() {
     const dispatch = useDispatch();
@@ -94,6 +95,7 @@ export function App() {
                 <Route path={"/about/*"} element={<BaseAbout/>}/>
                 <Route path={"/auth/*"} element={<BaseAuth/>}/>
                 <Route path={"/admin/*"} element={<BaseAdmin/>}/>
+                <Route path={"/debug"} element={<Demo/>}/>
             </Routes>
         </>
     );
