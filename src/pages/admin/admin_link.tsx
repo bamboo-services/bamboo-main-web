@@ -222,6 +222,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                                             appearance="transparent"
                                             icon={<PenRegular fontSize={24}/>}
                                             aria-label="Edit"
+                                            onClick={() => navigate(`/admin/link/edit/${data.id}`)}
                                         />
                                     }
                                 />

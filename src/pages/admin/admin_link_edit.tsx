@@ -31,20 +31,20 @@ import {SystemInfoEntity} from "../../models/entity/system_info_entity";
 import {useEffect} from "react";
 import {LinkOperateComponent} from "../../components/admin/link_operate_component.tsx";
 
-export function AdminLinkAdd({headerEmit, menuEmit}: Readonly<{
+export function AdminLinkEdit({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
     menuEmit: (data: string) => void
 }>) {
     const webInfoStore = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
-    document.title = `添加友链 | ${webInfoStore.site.site_name}`;
+    document.title = `编辑友链 | ${webInfoStore.site.site_name}`;
 
     useEffect(() => {
-        headerEmit("添加友链");
+        headerEmit("编辑友链");
         menuEmit("link");
     }, [headerEmit, menuEmit]);
 
     return (
-        <LinkOperateComponent type={"add"}/>
+        <LinkOperateComponent type={"edit"}/>
     );
 }

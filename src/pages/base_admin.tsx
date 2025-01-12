@@ -40,6 +40,7 @@ import {animated, useSpring, useTransition} from "@react-spring/web";
 import {easeQuadOut} from "d3-ease";
 import {AdminLinkAdd} from "./admin/admin_link_add.tsx";
 import {AdminSponsor} from "./admin/admin_sponsor.tsx";
+import {AdminLinkEdit} from "./admin/admin_link_edit.tsx";
 
 export function BaseAdmin() {
     const location = useLocation();
@@ -118,6 +119,9 @@ export function BaseAdmin() {
                                     <Route
                                         path={"link/add"}
                                         element={<AdminLinkAdd headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                    <Route
+                                        path={"link/edit/:id"}
+                                        element={<AdminLinkEdit headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
                                     <Route
                                         path={"sponsor"}
                                         element={<AdminSponsor headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
