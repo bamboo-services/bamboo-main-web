@@ -57,6 +57,16 @@ export function BaseAbout() {
         config: {tension: 50, friction: 26},
     });
 
+    const rightMenuSpring = useSpring({
+        to: {
+            opacity: location.pathname.includes("friends") ? 1 : 0,
+            display: location.pathname.includes("friends") ? "block" : "none",
+        },
+        from: {opacity: 0},
+        delay: location.pathname.includes("friends") ? 1000 : 0,
+        config: {tension: 100, friction: 26}
+    });
+
     // 路由切换的动画
     const transitions = useTransition(location, {
         from: {opacity: 0, transform: "translateY(20px)"},
@@ -73,6 +83,13 @@ export function BaseAbout() {
         display: openSideMenuDisplay ? "block" : "none",
         config: {tension: 100, friction: 26}
     });
+
+    useEffect(() => {
+        if (!location.pathname.includes("friends")) {
+            setOpenSideMenu(false);
+            setOpenSideMenuDisplay(false);
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         if (change) {
@@ -117,7 +134,7 @@ export function BaseAbout() {
                     </div>
                 </div>
             </div>
-            <div className="hidden md:block">
+            <animated.div style={rightMenuSpring} className="hidden md:block">
                 <div className="fixed bottom-0 right-0 grid gap-3 p-6">
                     <animated.div style={sideMenuSpring}>
                         <Tooltip content="联系博主" positioning={"before"} relationship="label" withArrow>
@@ -131,7 +148,8 @@ export function BaseAbout() {
                     </animated.div>
                     <animated.div style={sideMenuSpring}>
                         <Tooltip content="友链申请" positioning={"before"} relationship="label" withArrow>
-                            <Button onClick={() => navigate("/operate/add")} size={"large"} appearance={"secondary"} icon={<StickerAddRegular/>}/>
+                            <Button onClick={() => navigate("/operate/add")} size={"large"} appearance={"secondary"}
+                                    icon={<StickerAddRegular/>}/>
                         </Tooltip>
                     </animated.div>
                     <div className={"transition"}>
@@ -142,7 +160,7 @@ export function BaseAbout() {
                         </Tooltip>
                     </div>
                 </div>
-            </div>
+            </animated.div>
         </>
     );
 }
