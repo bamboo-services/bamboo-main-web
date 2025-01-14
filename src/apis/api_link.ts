@@ -36,6 +36,7 @@ import {LocationAddDTO} from "../models/dto/location_add.ts";
 import {ColorsEntity} from "../models/entity/color_get_entity.ts";
 import {LinkAddDTO} from "../models/dto/link_add.ts";
 import {LinkAddAdminDTO} from "../models/dto/link_add_admin.ts";
+import {ColorAbleSelectEntity} from "../models/entity/color_able_select_entity.ts";
 
 /**
  * GetLinkAPI
@@ -242,6 +243,24 @@ const AdminGetColorAPI = async (): Promise<BaseResponse<ColorsEntity> | undefine
 
 }
 
+/**
+ * GetAbleSelectColorAPI
+ *
+ * 用于获取所有的颜色，该接口为用户端接口，不需要进行权限验证
+ *
+ * @returns Promise<BaseResponse<ColorAbleSelectEntity>>
+ */
+const GetAbleSelectColorAPI = async (): Promise<BaseResponse<ColorAbleSelectEntity> | undefined> => {
+    return BaseApi<ColorAbleSelectEntity>(
+        MethodType.GET,
+        "/api/v1/link/color",
+        null,
+        null,
+        null,
+        null
+    );
+}
+
 export {
     AdminGetLinkAPI,
     GetLinkAPI,
@@ -253,5 +272,6 @@ export {
     AdminEditLocationAPI,
     AdminDelLocationAPI,
     AdminAddLocationAPI,
-    AdminGetColorAPI
+    AdminGetColorAPI,
+    GetAbleSelectColorAPI
 };

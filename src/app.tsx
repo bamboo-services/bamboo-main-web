@@ -39,6 +39,7 @@ import {setWebInfo} from "./stores/web_info_store.ts";
 import {BaseAdmin} from "./pages/base_admin.tsx";
 import {BaseAbout} from "./pages/base_about.tsx";
 import {Demo} from "./pages/demo.tsx";
+import {BaseOperate} from "./pages/base_operate.tsx";
 
 export function App() {
     const dispatch = useDispatch();
@@ -93,6 +94,7 @@ export function App() {
             <Routes>
                 <Route path={"/"} element={<BaseIndex/>}/>
                 <Route path={"/about/*"} element={<BaseAbout/>}/>
+                <Route path={"/operate/*"} element={<BaseOperate/>}/>
                 <Route path={"/auth/*"} element={<BaseAuth/>}/>
                 <Route path={"/admin/*"} element={<BaseAdmin/>}/>
                 <Route path={"/debug"} element={<Demo/>}/>

@@ -26,17 +26,32 @@
  * --------------------------------------------------------------------------------
  */
 
-import {Route, Routes, useLocation} from "react-router";
+import {Route, Routes, useLocation, useNavigate} from "react-router";
 import {HeaderComponent} from "../components/about/header_component.tsx";
 import {animated, useSpring, useTransition} from "@react-spring/web";
 import {AboutMe} from "./about/about_me.tsx";
 import {AboutFriends} from "./about/about_friends.tsx";
 import {AboutSponsor} from "./about/about_sponsor.tsx";
+import {Button, Tooltip} from "@fluentui/react-components";
+import {
+    AppsAddInFilled,
+    BookContactsRegular,
+    CloudEditRegular,
+    RecordStopRegular,
+    StickerAddRegular
+} from "@fluentui/react-icons";
+import {useEffect, useState} from "react";
 
 export function BaseAbout() {
     const location = useLocation();
+    const navigate = useNavigate();
 
-    const spring = useSpring({
+    const [openSideMenu, setOpenSideMenu] = useState<boolean>(false);
+    const [openSideMenuDisplay, setOpenSideMenuDisplay] = useState<boolean>(false);
+    const [timeOut, setTimeOut] = useState<number>(0);
+    const [change, setChange] = useState<boolean>(false);
+
+    const backgroundImageSpring = useSpring({
         from: {opacity: 0, transform: "scale(1.2)"},
         to: {opacity: 1, transform: "scale(1)"},
         config: {tension: 50, friction: 26},
@@ -52,9 +67,31 @@ export function BaseAbout() {
         }
     });
 
+    const sideMenuSpring = useSpring({
+        opacity: openSideMenu ? 1 : 0,
+        transform: openSideMenu ? "translateY(0)" : "translateY(15px)",
+        display: openSideMenuDisplay ? "block" : "none",
+        config: {tension: 100, friction: 26}
+    });
+
+    useEffect(() => {
+        if (change) {
+            setOpenSideMenu(!openSideMenu);
+            if (!openSideMenu) {
+                setOpenSideMenuDisplay(true);
+                clearTimeout(timeOut);
+            } else {
+                setTimeOut(setTimeout(() => {
+                    setOpenSideMenuDisplay(false);
+                }, 1000));
+            }
+            setChange(false);
+        }
+    }, [change, openSideMenu, openSideMenuDisplay, timeOut]);
+
     return (
-        <div className={"overflow-y-hidden"}>
-            <animated.div style={spring} className="w-full h-full fixed bottom-0 left-0">
+        <>
+            <animated.div style={backgroundImageSpring} className="w-full h-full fixed bottom-0 left-0">
                 <img
                     src="https://i-cdn.akass.cn/2024/01/659d0941af288.jpg!wp"
                     alt=""
@@ -80,6 +117,32 @@ export function BaseAbout() {
                     </div>
                 </div>
             </div>
-        </div>
+            <div className="hidden md:block">
+                <div className="fixed bottom-0 right-0 grid gap-3 p-6">
+                    <animated.div style={sideMenuSpring}>
+                        <Tooltip content="联系博主" positioning={"before"} relationship="label" withArrow>
+                            <Button size={"large"} appearance={"secondary"} icon={<BookContactsRegular/>}/>
+                        </Tooltip>
+                    </animated.div>
+                    <animated.div style={sideMenuSpring}>
+                        <Tooltip content="修改友链" positioning={"before"} relationship="label" withArrow>
+                            <Button size={"large"} appearance={"secondary"} icon={<CloudEditRegular/>}/>
+                        </Tooltip>
+                    </animated.div>
+                    <animated.div style={sideMenuSpring}>
+                        <Tooltip content="友链申请" positioning={"before"} relationship="label" withArrow>
+                            <Button onClick={() => navigate("/operate/add")} size={"large"} appearance={"secondary"} icon={<StickerAddRegular/>}/>
+                        </Tooltip>
+                    </animated.div>
+                    <div className={"transition"}>
+                        <Tooltip content="功能组件" positioning={"before"} relationship="label" withArrow>
+                            <Button onClick={() => setChange((prop) => !prop)}
+                                    size="large" appearance={"primary"}
+                                    icon={openSideMenu ? <RecordStopRegular/> : <AppsAddInFilled/>}/>
+                        </Tooltip>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }
