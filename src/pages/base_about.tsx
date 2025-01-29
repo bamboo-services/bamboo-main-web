@@ -138,12 +138,14 @@ export function BaseAbout() {
                 <div className="fixed bottom-0 right-0 grid gap-3 p-6">
                     <animated.div style={sideMenuSpring}>
                         <Tooltip content="联系博主" positioning={"before"} relationship="label" withArrow>
-                            <Button size={"large"} appearance={"secondary"} icon={<BookContactsRegular/>}/>
+                            <Button onClick={() => navigate("/operate/contact")} size={"large"} appearance={"secondary"}
+                                    icon={<BookContactsRegular/>}/>
                         </Tooltip>
                     </animated.div>
                     <animated.div style={sideMenuSpring}>
                         <Tooltip content="修改友链" positioning={"before"} relationship="label" withArrow>
-                            <Button size={"large"} appearance={"secondary"} icon={<CloudEditRegular/>}/>
+                            <Button onClick={() => navigate("/operate/edit")} size={"large"} appearance={"secondary"}
+                                    icon={<CloudEditRegular/>}/>
                         </Tooltip>
                     </animated.div>
                     <animated.div style={sideMenuSpring}>

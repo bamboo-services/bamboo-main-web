@@ -118,7 +118,7 @@ export function BaseIndex() {
                 <footer
                     className={"hidden md:flex absolute inset-x-0 bottom-0 justify-between items-end p-3 text-gray-500"}>
                     <animated.div style={footerLeftSpring} className={"grid"}>
-                        <Link to={'/auth/login'}>账户登录</Link>
+                        <Link to={'/admin/dashboard'}>账户登录</Link>
                         <span>Copyright (C) 2016-{thisYear} 筱锋xiao_lfeng. All Rights Reserved.</span>
                     </animated.div>
                     <animated.div style={footerRightSpring} className={"grid text-end"}>

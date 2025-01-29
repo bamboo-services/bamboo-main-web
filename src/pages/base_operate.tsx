@@ -33,6 +33,7 @@ import {BookContactsRegular, CloudEditRegular, HomeRegular, StickerAddRegular} f
 import noAvatar from "../assets/images/no_avatar.png";
 import {useEffect, useState} from "react";
 import {LinkDisplayModule} from "../models/modules/link_display_module.ts";
+import {OperateEditFriends} from "./operate/operate_edit_friends.tsx";
 
 export function BaseOperate() {
     const location = useLocation();
@@ -161,7 +162,7 @@ export function BaseOperate() {
                                 <Link to={"/operate/edit"}
                                       className={currentRoute("edit")}>
                                     <CloudEditRegular fontSize={20}/>
-                                    <span>编辑友链</span>
+                                    <span>修改友链</span>
                                 </Link>
                             </animated.div>
                             <animated.div style={menuSprings[3]}>
@@ -181,6 +182,8 @@ export function BaseOperate() {
                                 <Routes location={item}>
                                     <Route path={"/add"}
                                            element={<OperateAddFriends emitLinkDisplay={setLinkDisplay}/>}/>
+                                    <Route path={"/edit"}
+                                           element={<OperateEditFriends emitLinkDisplay={setLinkDisplay}/>}/>
                                 </Routes>
                             </animated.div>
                         ))}

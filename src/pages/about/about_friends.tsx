@@ -27,7 +27,7 @@
  */
 
 import {GetLinkAPI} from "../../apis/api_link.ts";
-import {useEffect, useState} from "react";
+import {JSX, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
 import {Link} from "react-router";

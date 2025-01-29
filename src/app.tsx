@@ -53,7 +53,7 @@ export function App() {
             dispatchToast(
                 <Toast>
                     <ToastTitle>{toasterStore.title}</ToastTitle>
-                    <ToastBody>{toasterStore.message}</ToastBody>
+                    {toasterStore.message !== "" ? <ToastBody>{toasterStore.message}</ToastBody> : null}
                 </Toast>,
                 {
                     position: "top-end",
