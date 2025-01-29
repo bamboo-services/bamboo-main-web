@@ -124,7 +124,7 @@ export function AboutFriends() {
     document.title = `${webInfo.site.site_name} | 友人帐`;
 
     return (
-        <div className={"grid md:rounded-lg md:bg-white md:bg-opacity-50 md:p-6 md:shadow-xl"}>
+        <div className={"grid md:rounded-lg md:bg-gray-100/50 md:p-6 md:shadow-xl"}>
             {springs.map((spring, index) => (
                 <animated.div key={`link-` + index} style={spring}>
                     {webReveal[index]}

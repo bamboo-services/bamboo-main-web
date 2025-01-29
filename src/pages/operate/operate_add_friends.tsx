@@ -26,7 +26,7 @@
  * --------------------------------------------------------------------------------
  */
 
-import {Button, Divider, InfoLabel, Input, Label, Select, Textarea} from "@fluentui/react-components";
+import {Button} from "@fluentui/react-components";
 import {animated, useSprings} from "@react-spring/web";
 import {useEffect, useState} from "react";
 import {GetAbleSelectColorAPI} from "../../apis/api_link.ts";
@@ -36,6 +36,19 @@ import {setToaster} from "../../stores/toaster_store.ts";
 import {ToastStore} from "../../models/store/toast_stores.ts";
 import {LinkDisplayModule} from "../../models/modules/link_display_module.ts";
 import {LinkAddDTO} from "../../models/dto/link_add.ts";
+import {InfoLabel} from "../../components/info_label.tsx";
+import {
+    ColorFilter,
+    Editor,
+    Home,
+    Link,
+    LocalTwo,
+    Mail,
+    NetworkDrive,
+    Pic,
+    Rss,
+    Telegram
+} from "@icon-park/react";
 
 export function OperateAddFriends({emitLinkDisplay}: Readonly<{
     emitLinkDisplay: (data: LinkDisplayModule) => void
@@ -82,186 +95,342 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
             <div className={"col-span-full flex text-2xl font-bold justify-center"}>
                 友链申请
             </div>
+
+            {/* 邮箱 */}
             <animated.div style={springs[0]} className={"grid"}>
-                <Label htmlFor={"link-email"} className={"flex space-x-1"}>
-                    <span>您的邮箱</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>站长邮箱</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <input
+                        type="email"
+                        placeholder="gm@x-lf.cn"
+                        pattern="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
+                        title="邮箱格式不正确"
+                        onChange={(e) => setLinkAdd({...linkAdd, webmaster_email: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
                                 <span>邮箱是为您发送友链审核通过的通知，不会被公开。</span>
                                 <span>并且填写邮箱后续有需要修改友链信息，可直接验证邮箱验证码即可修改站点。</span>
                             </div>
                         }
+                        icon={<Mail theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"link-email"} required
-                       onChange={(_, data) => setLinkAdd({...linkAdd, webmaster_email: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    邮箱格式不正确
+                </p>
             </animated.div>
+
+            {/* 服务提供商 */}
             <animated.div style={springs[1]} className={"grid"}>
-                <Label htmlFor={"link-provider"} className={"flex space-x-1"}>
-                    <span>服务提供商</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>服务提供</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="阿里云"
+                        onChange={(e) => setLinkAdd({...linkAdd, service_provider: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
-                                <span>为了保证站点的质量，以及其他用户访问其他站点比较方便，推荐使用大厂服务商。</span>
-                                <span>（不影响友链审核，也不会公开，只是希望各位站长可以更好经营自己的站点而写）</span>
+                                <span>为了保证站点的质量，推荐使用大厂服务商</span>
+                                <span>博主只是想看看朋友你会不会想用心经营下去这个站点</span>
+                                <span className="text-gray-500">（不影响友链审核，也不会公开）</span>
                             </div>
                         }
+                        icon={<NetworkDrive theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"link-provider"} required
-                       onChange={(_, data) => setLinkAdd({...linkAdd, service_provider: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入服务提供商
+                </p>
             </animated.div>
+
+            {/* 站点名字 */}
             <animated.div style={springs[2]} className={"grid"}>
-                <Label htmlFor={"site-name"} className={"flex space-x-1"}>
-                    <span>站点名字</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>站点名字</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="凌中的锋雨"
+                        title="请输入站点名称"
+                        onChange={(e) => setLinkAdd({...linkAdd, site_name: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
-                                <span>您的站点名字，例如：<b>凌中的锋雨</b></span>
+                                <span>您的站点名字，例如：</span>
+                                <b className="text-primary">凌中的锋雨</b>
                             </div>
                         }
+                        icon={<Home theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"site-name"} required
-                       onChange={(_, data) => setLinkAdd({...linkAdd, site_name: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入站点名称
+                </p>
             </animated.div>
+
+            {/* 站点地址 */}
             <animated.div style={springs[3]} className={"grid"}>
-                <Label htmlFor={"site-url"} className={"flex space-x-1"}>
-                    <span>站点地址</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>站点地址</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <input
+                        type="url"
+                        placeholder="https://www.x-lf.com/"
+                        pattern="^(http|https)://[^\s]*$"
+                        title="请输入有效的URL地址"
+                        onChange={(e) => setLinkAdd({...linkAdd, site_url: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
-                                <span>您的站点地址，例如：</span>
-                                <a href={"https://www.x-lf.com/"} target={"_blank"}
-                                   className={"text-blue-500 hover:text-blue-600 transition"}>
+                                <span>您的站点地址（需包含http/https协议头）：</span>
+                                <a href={"https://www.x-lf.com/"}
+                                   className="text-primary hover:underline"
+                                   target="_blank"
+                                   rel="noreferrer">
                                     https://www.x-lf.com/
                                 </a>
                             </div>
                         }
+                        icon={<Link theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"site-url"} required
-                       onChange={(_, data) => setLinkAdd({...linkAdd, site_url: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入有效的URL地址
+                </p>
             </animated.div>
+
+            {/* 站点图片地址 */}
             <animated.div style={springs[4]} className={"grid col-span-full"}>
-                <Label htmlFor={"site-image-url"} className={"flex space-x-1"}>
-                    <span>站点图片地址</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>站点图片</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <input
+                        type="url"
+                        placeholder="https://www.x-lf.com/"
+                        pattern="^(http|https)://[^\s]+.(jpg|jpeg|webp|png|ico)$"
+                        title="请输入有效的URL地址"
+                        onChange={(e) => setLinkAdd({...linkAdd, site_logo: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
-                                <span>您的站点首选地址，用作友链展示的图片</span>
-                                <span>（支持 gif 动图，浏览器可渲染内容即可）</span>
+                                <span>图片地址支持 PNG/JPG/JPEG/WEBP/ICO 格式</span>
+                                <span>推荐尺寸：256×256 像素</span>
                             </div>
                         }
+                        icon={<Pic theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"site-image-url"} required
-                       onChange={(_, data) => setLinkAdd({...linkAdd, site_logo: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入有效的图片地址
+                    <br/>图片地址支持 PNG/JPG/JPEG/WEBP/ICO 格式
+                </p>
             </animated.div>
+
+            {/* 站点订阅地址 */}
             <animated.div style={springs[5]} className={"grid col-span-full"}>
-                <Label htmlFor={"site-rss-url"} className={"flex space-x-1"}>
-                    <span>站点订阅地址</span>
+                <label className="input validator transition w-full">
+                    <div className="label">
+                        <span>订阅地址</span>
+                        <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                    </div>
+                    <input
+                        type="url"
+                        placeholder="https://www.x-lf.com/atom.xml"
+                        pattern="^(http|https)://[^\s]*$"
+                        title="请输入有效的站点订阅地址"
+                        onChange={(e) => setLinkAdd({...linkAdd, site_rss_url: e.target.value})}
+                        required
+                    />
                     <InfoLabel
-                        info={
+                        clazz={"label"}
+                        data={
                             <div className={"grid"}>
-                                <span>若您的站点有 RSS 或 ATOM 订阅地址可以填写进入，方便我订阅哦</span>
-                                <span>（如果不知道可以不填写）例如：</span>
-                                <a href={"https://blog.x-lf.com/atom.xml"} target={"_blank"}
-                                   className={"text-blue-500 hover:text-blue-600 transition"}>
+                                <span>Rss/Atom订阅地址（可选）</span>
+                                <a href={"https://blog.x-lf.com/atom.xml"}
+                                   className="text-primary hover:underline"
+                                   target="_blank"
+                                   rel="noreferrer">
                                     https://blog.x-lf.com/atom.xml
                                 </a>
                             </div>
                         }
+                        icon={<Rss theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Input className={"w-full"} id={"site-rss-url"}
-                       onChange={(_, data) => setLinkAdd({...linkAdd, site_rss_url: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入有效的站点订阅地址
+                </p>
             </animated.div>
+
+            {/* 站点描述 */}
             <animated.div style={springs[6]} className={"grid col-span-full"}>
-                <Label htmlFor={"site-description"} className={"flex space-x-1"}>
-                    <span>站点描述</span>
-                    <span className={"text-xs text-red-500"}>*</span>
-                    <InfoLabel
-                        info={
-                            <div className={"grid"}>
-                                <span>您的站点一句话描述，用作友链展示使用，例如：</span>
-                                <b>不为如何，只为在茫茫人海中有自己的一片天空~</b>
-                            </div>
-                        }
+                <label className="textarea validator w-full">
+                    <div className={"flex items-center space-x-1"}>
+                        <InfoLabel
+                            data={
+                                <div className={"grid"}>
+                                    <span>用一句话描述您的站点：</span>
+                                    <b className="text-primary">不为如何，只为在茫茫人海中有自己的一片天空~</b>
+                                </div>
+                            }
+                            icon={<Editor theme="outline" size="20" fill="#333"/>}
+                        />
+                        <div className="label">
+                            <span>站点描述</span>
+                            <span className={"text-xs text-red-500"}>*</span>
+                        </div>
+                    </div>
+                    <textarea
+                        placeholder="不为如何，只为在茫茫人海中有自己的一片天空"
+                        className="w-full textarea"
+                        required
+                        onChange={(e) => setLinkAdd({...linkAdd, site_description: e.target.value})}
                     />
-                </Label>
-                <Textarea className={"w-full"} id={"site-description"} required
-                          onChange={(_, data) => setLinkAdd({...linkAdd, site_description: data.value})}/>
+                </label>
+                <p className="validator-hint hidden">
+                    请输入站点描述
+                </p>
             </animated.div>
+
+            {/* 站点属性分割线 */}
             <animated.div style={springs[7]} className={"col-span-full pt-3"}>
-                <Divider appearance="brand" draggable={false}>站点属性</Divider>
+                <div className="divider before:bg-gray-200 after:bg-gray-200 text-gray-500">站点属性</div>
             </animated.div>
+
+            {/* 期望位置 */}
             <animated.div style={springs[8]} className={"grid"}>
-                <Label htmlFor={"expected-location"} className={"flex space-x-1"}>
-                    <span>期望位置</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="select validator w-full">
+                    <div className="label">
+                        <span>展示位置</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <select
+                        required
+                        onChange={(e) => setLinkAdd({...linkAdd, desired_location: Number(e.target.value)})}
+                    >
+                        <option value="">请选择位置</option>
+                        <option value="1">顶部推荐位</option>
+                        <option value="2">友情链接区</option>
+                        <option value="3">特别推荐位</option>
+                    </select>
                     <InfoLabel
-                        info={
+                        data={
                             <div className={"grid"}>
-                                <span>您期望您的站点在哪一个位置展示给大家看。</span>
-                                <b>（注意，不可选择的代表是特定的）</b>
+                                <span>选择您的展示位置</span>
+                                <span>注意：展示位置为您的预期，博主会根据您的选择与您站点内容性质进行选择展示位置</span>
+                                <span className="text-gray-500">（不可选位置为保留位置）</span>
                             </div>
                         }
+                        icon={<LocalTwo theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Select className={"w-full"} id={"expected-location"} required
-                        onChange={(_, data) => setLinkAdd({...linkAdd, desired_location: Number(data.value)})}>
-                    <option>Red</option>
-                    <option>Green</option>
-                    <option>Blue</option>
-                </Select>
+                </label>
+                <p className="validator-hint hidden">
+                    请选择展示位置
+                </p>
             </animated.div>
+
+            {/* 期望颜色 */}
             <animated.div style={springs[9]} className={"grid"}>
-                <Label htmlFor={"expected-color"} className={"flex space-x-1"}>
-                    <span>期望颜色</span>
-                    <span className={"text-xs text-red-500"}>*</span>
+                <label className="select validator w-full">
+                    <div className="label">
+                        <span>展示颜色</span>
+                        <span className={"text-xs text-red-500"}>*</span>
+                    </div>
+                    <select
+                        required
+                        onChange={(e) => setLinkAdd({...linkAdd, desired_color: Number(e.target.value)})}
+                    >
+                        <option value="">请选择颜色</option>
+                        {getColor.colors?.map((color, index) => (
+                            <option key={"color-" + index} value={color.id}>
+                                {color.display_name}
+                            </option>
+                        ))}
+                    </select>
                     <InfoLabel
-                        info={
+                        data={
                             <div className={"grid"}>
-                                <span>您可以选择一个颜色展示边框，可以让别人看到更加醒目。</span>
-                                <b>（注意，不可选择的代表是特定的）</b>
+                                <span>选择边框强调色</span>
+                                <span>注意：某些颜色为特定颜色，不可选择</span>
+                                <span className="text-gray-500">（不可选颜色为保留）</span>
                             </div>
                         }
+                        icon={<ColorFilter theme="outline" size="20" fill="#333"/>}
                     />
-                </Label>
-                <Select className={"w-full"} id={"expected-color"} required
-                        onChange={(_, data) => setLinkAdd({...linkAdd, desired_color: Number(data.value)})}>
-                    {getColor.colors?.map((color, index) => (
-                        <option key={"color_" + index} value={color.id}>{color.display_name}</option>
-                    ))}
-                </Select>
+                </label>
+                <p className="validator-hint hidden">
+                    请选择展示颜色
+                </p>
             </animated.div>
+
+            {/* 备注信息分割线 */}
             <animated.div style={springs[10]} className={"col-span-full pt-3"}>
-                <Divider appearance="brand" draggable={false}>备注信息</Divider>
+                <div className="divider before:bg-gray-200 after:bg-gray-200 text-gray-500">备注信息</div>
             </animated.div>
+
+            {/* 备注 */}
             <animated.div style={springs[11]} className={"grid col-span-full"}>
-                <Label htmlFor={"remarks"} className={"flex space-x-1"}>
-                    <span>备注</span>
-                    <InfoLabel
-                        info={
-                            <div className={"grid"}>
-                                <span>什么都可以写，就是写给我看的</span>
-                                <span>（不会被展示出来）</span>
-                            </div>
-                        }
+                <label className="textarea w-full">
+                    <div className={"flex items-center space-x-1"}>
+                        <InfoLabel
+                            data={
+                                <div className={"grid"}>
+                                    <span>给站长的留言（可选）：</span>
+                                    <span className="text-gray-500">（仅站长可见）</span>
+                                </div>
+                            }
+                            icon={<Telegram theme="outline" size="20" fill="#333"/>}
+                        />
+                        <div className="label">
+                            <span>备注留言</span>
+                            <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                        </div>
+                    </div>
+                    <textarea
+                        placeholder="对我说的一些备注内容"
+                        className="w-full textarea"
+                        onChange={(e) => setLinkAdd({...linkAdd, remark: e.target.value})}
                     />
-                </Label>
-                <Textarea className={"w-full"} id={"remarks"}
-                          onChange={(_, data) => setLinkAdd({...linkAdd, remark: data.value})}/>
+                </label>
             </animated.div>
-            <animated.div style={springs[12]} className={"grid col-span-full w-full justify-center"}>
-                <Button appearance={"primary"}>提交申请</Button>
+
+            {/* 提交按钮 */}
+            <animated.div style={springs[12]} className={"grid col-span-full w-full justify-center mt-6"}>
+                <Button
+                    appearance="primary"
+                    className="!bg-primary !text-white hover:!bg-primary-dark w-full max-w-[200px]"
+                >
+                    提交申请
+                </Button>
             </animated.div>
         </div>
     );

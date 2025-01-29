@@ -87,7 +87,10 @@ export function BaseOperate() {
     });
 
     const insertMenuSpring = useSpring({
-        to: {opacity: 1, transform: hasDisplay ? "translateY(12px) translateX(0px)" : "translateY(0px) translateX(0px)"},
+        to: {
+            opacity: 1,
+            transform: hasDisplay ? "translateY(12px) translateX(0px)" : "translateY(0px) translateX(0px)"
+        },
         from: {opacity: 0, transform: "translateX(-20px)"},
         config: {tension: 100, friction: 15},
     });
@@ -110,8 +113,8 @@ export function BaseOperate() {
 
     function currentRoute(path: string): string {
         return location.pathname.includes(path) ?
-            "transition block p-2 rounded-md bg-gray-400/75 text-gray-900 flex space-x-1"
-            : "transition block p-2 rounded-md text-gray-800 hover:bg-gray-400/50 flex space-x-1";
+            "transition block p-2 rounded-md bg-primary text-gray-900 flex space-x-1"
+            : "transition block p-2 rounded-md text-gray-800 hover:bg-base-300 flex space-x-1";
     }
 
     return (
@@ -127,66 +130,72 @@ export function BaseOperate() {
             <div className={"relative grid grid-cols-12 p-16 justify-center lg:px-48 xl:px-64 2xl:px-72 gap-3 z-50"}>
                 <div className={"col-span-3 hidden md:flex flex-col"}>
                     <animated.div style={linkSeeSpring}
-                                  className={"bg-gray-100/50 rounded-md shadow-md grid gap-1 text-center p-3"}>
-                        <div className={"flex justify-center"}>
-                            <img src={linkDisplay?.site_logo}
-                                 onError={(e) => {
-                                     e.currentTarget.src = noAvatar;
-                                     e.currentTarget.onerror = null;
-                                 }}
-                                 alt={""} draggable={false}
-                                 className={"rounded-full size-12 lg:size-16 shadow-lg shadow-gray-100"}/>
-                        </div>
-                        <div className={"text-lg font-bold truncate"}>{linkDisplay?.site_name}</div>
-                        <div className={"text-sm font-light text-gray-400 line-clamp-1"}>
-                            {linkDisplay?.site_description}
+                                  className={"card card-border bg-base-100 card-sm shadow-md"}>
+                        <div className="card-body grid gap-1 text-center">
+                            <div className={"flex justify-center"}>
+                                <img src={linkDisplay?.site_logo}
+                                     onError={(e) => {
+                                         e.currentTarget.src = noAvatar;
+                                         e.currentTarget.onerror = null;
+                                     }}
+                                     alt={""} draggable={false}
+                                     className={"rounded-full size-12 lg:size-16 shadow-lg shadow-gray-100"}/>
+                            </div>
+                            <div className={"text-lg font-bold truncate"}>{linkDisplay?.site_name}</div>
+                            <div className={"text-sm font-light text-gray-400 line-clamp-1"}>
+                                {linkDisplay?.site_description}
+                            </div>
                         </div>
                     </animated.div>
                     <animated.div style={insertMenuSpring}>
-                        <div className={"grid gap-1 rounded-md bg-gray-100/50 shadow-md p-3"}>
-                            <animated.div style={menuSprings[0]}>
-                                <Link to={"/"}
-                                      className={"transition p-2 rounded-md flex space-x-1 items-center text-gray-800 hover:bg-gray-400/50"}>
-                                    <HomeRegular fontSize={20}/>
-                                    <span>首页</span>
-                                </Link>
-                            </animated.div>
-                            <animated.div style={menuSprings[1]}>
-                                <Link to={"/operate/add"}
-                                      className={currentRoute("add")}>
-                                    <StickerAddRegular fontSize={20}/>
-                                    <span>友链申请</span>
-                                </Link>
-                            </animated.div>
-                            <animated.div style={menuSprings[2]}>
-                                <Link to={"/operate/edit"}
-                                      className={currentRoute("edit")}>
-                                    <CloudEditRegular fontSize={20}/>
-                                    <span>修改友链</span>
-                                </Link>
-                            </animated.div>
-                            <animated.div style={menuSprings[3]}>
-                                <Link to={"/operate/contact"}
-                                      className={currentRoute("contact")}>
-                                    <BookContactsRegular fontSize={20}/>
-                                    <span>与我联系</span>
-                                </Link>
-                            </animated.div>
+                        <div className={"card card-border bg-base-100 card-sm shadow-md"}>
+                            <div className="card-body">
+                                <animated.div style={menuSprings[0]}>
+                                    <Link to={"/"}
+                                          className={"transition p-2 rounded-md flex space-x-1 items-center text-gray-800 hover:bg-base-300"}>
+                                        <HomeRegular fontSize={20}/>
+                                        <span>首页</span>
+                                    </Link>
+                                </animated.div>
+                                <animated.div style={menuSprings[1]}>
+                                    <Link to={"/operate/add"}
+                                          className={currentRoute("add")}>
+                                        <StickerAddRegular fontSize={20}/>
+                                        <span>友链申请</span>
+                                    </Link>
+                                </animated.div>
+                                <animated.div style={menuSprings[2]}>
+                                    <Link to={"/operate/edit"}
+                                          className={currentRoute("edit")}>
+                                        <CloudEditRegular fontSize={20}/>
+                                        <span>修改友链</span>
+                                    </Link>
+                                </animated.div>
+                                <animated.div style={menuSprings[3]}>
+                                    <Link to={"/operate/contact"}
+                                          className={currentRoute("contact")}>
+                                        <BookContactsRegular fontSize={20}/>
+                                        <span>与我联系</span>
+                                    </Link>
+                                </animated.div>
+                            </div>
                         </div>
                     </animated.div>
                 </div>
                 <animated.div style={indexSpring} className={"col-span-full md:col-span-9"}>
-                    <div className={"rounded-md bg-gray-100/50 shadow-md p-3 w-full"}>
-                        {transitions((style, item) => (
-                            <animated.div style={style} className={"w-full"}>
-                                <Routes location={item}>
-                                    <Route path={"/add"}
-                                           element={<OperateAddFriends emitLinkDisplay={setLinkDisplay}/>}/>
-                                    <Route path={"/edit"}
-                                           element={<OperateEditFriends emitLinkDisplay={setLinkDisplay}/>}/>
-                                </Routes>
-                            </animated.div>
-                        ))}
+                    <div className="grid gap-1 card card-border bg-base-100 card-sm shadow-md w-full">
+                        <div className={"card-body"}>
+                            {transitions((style, item) => (
+                                <animated.div style={style} className={"w-full"}>
+                                    <Routes location={item}>
+                                        <Route path={"/add"}
+                                               element={<OperateAddFriends emitLinkDisplay={setLinkDisplay}/>}/>
+                                        <Route path={"/edit"}
+                                               element={<OperateEditFriends emitLinkDisplay={setLinkDisplay}/>}/>
+                                    </Routes>
+                                </animated.div>
+                            ))}
+                        </div>
                     </div>
                 </animated.div>
             </div>
