@@ -132,17 +132,17 @@ const AddLinkAPI = async (data: LinkAddAdminDTO): Promise<BaseResponse<null> | u
 }
 
 /**
- * AddLinkCustomAPI
+ * AddLinkUserAPI
  *
  * 用于添加自定义链接信息，该接口为用户端接口，不需要进行权限验证
  *
  * @param data LinkAddDTO
- * @returns Promise<BaseResponse<number>>
+ * @returns Promise<BaseResponse<null>>
  */
-const AddLinkCustomAPI = async (data: LinkAddDTO): Promise<BaseResponse<number> | undefined> => {
-    return BaseApi<number>(
+const AddLinkUserAPI = async (data: LinkAddDTO): Promise<BaseResponse<null> | undefined> => {
+    return BaseApi<null>(
         MethodType.POST,
-        "/api/v1/link/custom",
+        "/api/v1/link",
         data,
         null,
         null,
@@ -261,17 +261,36 @@ const GetAbleSelectColorAPI = async (): Promise<BaseResponse<ColorAbleSelectEnti
     );
 }
 
+/**
+ * GetAbleSelectLocationAPI
+ *
+ * 用于获取所有的位置，该接口为用户端接口，不需要进行权限验证
+ *
+ * @returns Promise<BaseResponse<LocationGetAdminEntity>>
+ */
+const GetAbleSelectLocationAPI = async (): Promise<BaseResponse<LocationGetAdminEntity> | undefined> => {
+    return BaseApi<LocationGetAdminEntity>(
+        MethodType.GET,
+        "/api/v1/link/location",
+        null,
+        null,
+        null,
+        null
+    );
+}
+
 export {
     AdminGetLinkAPI,
     GetLinkAPI,
     GetSingleLinkAPI,
     EditLinkAPI,
     AddLinkAPI,
-    AddLinkCustomAPI,
+    AddLinkUserAPI,
     AdminGetLocationAPI,
     AdminEditLocationAPI,
     AdminDelLocationAPI,
     AdminAddLocationAPI,
     AdminGetColorAPI,
-    GetAbleSelectColorAPI
+    GetAbleSelectColorAPI,
+    GetAbleSelectLocationAPI
 };
