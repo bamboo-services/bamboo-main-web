@@ -86,7 +86,10 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
         const func = async () => {
             const getResp = await AdminGetLinkAPI();
             if (getResp?.output === "Success") {
-                setAdminLinkList(getResp.data!);
+                const filterData = getResp.data?.links?.filter(data => data.location !== 0);
+                if (filterData) {
+                    setAdminLinkList({...getResp.data!, links: filterData});
+                }
             } else {
                 dispatch(setToaster({
                     title: getResp?.message,
@@ -287,35 +290,19 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                             <div className="grid grid-cols-2 text-gray-700">
                                 <span className="font-medium">待审核数</span>
                                 <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList?.links?.filter(link => link.status === 0).length} 个
+                                    {adminLinkList.reviewed || 0} 个
                                 </span>
                             </div>
                             <div className="grid grid-cols-2 text-gray-700">
                                 <span className="font-medium">最近添加</span>
                                 <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList?.links?.filter(link => {
-                                        const createdAt = new Date(link.created_at);
-                                        const today = new Date();
-                                        return (
-                                            createdAt.getFullYear() === today.getFullYear() &&
-                                            createdAt.getMonth() === today.getMonth() &&
-                                            createdAt.getDate() === today.getDate()
-                                        );
-                                    }).length} 个
+                                    {adminLinkList.recently_added || 0} 个
                                 </span>
                             </div>
                             <div className="grid grid-cols-2 text-gray-700">
                                 <span className="font-medium">最近修改</span>
                                 <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList?.links?.filter(link => {
-                                        const updatedAt = new Date(link.updated_at);
-                                        const today = new Date();
-                                        return (
-                                            updatedAt.getFullYear() === today.getFullYear() &&
-                                            updatedAt.getMonth() === today.getMonth() &&
-                                            updatedAt.getDate() === today.getDate()
-                                        );
-                                    }).length} 个
+                                    {adminLinkList.recently_modified || 0} 个
                                 </span>
                             </div>
                             <div className="grid grid-cols-2 text-gray-700">
