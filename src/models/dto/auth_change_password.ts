@@ -35,7 +35,7 @@
  * @param email_code 邮箱验证码
  * @param new_password 新密码
  */
-export interface AuthChangePasswordDTO {
+export type AuthChangePasswordDTO = {
     email: string,
     email_code: string,
     new_password: string

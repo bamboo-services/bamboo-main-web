@@ -26,7 +26,6 @@
  * --------------------------------------------------------------------------------
  */
 
-import {Navigation24Filled} from "@fluentui/react-icons";
 import {SideNavComponent} from "../components/admin/side_nav_component.tsx";
 import {useEffect, useState} from "react";
 import {Route, Routes, useLocation, useNavigate} from "react-router";
@@ -41,6 +40,7 @@ import {easeQuadOut} from "d3-ease";
 import {AdminLinkAdd} from "./admin/admin_link_add.tsx";
 import {AdminSponsor} from "./admin/admin_sponsor.tsx";
 import {AdminLinkEdit} from "./admin/admin_link_edit.tsx";
+import {MenuFoldOne, MenuUnfoldOne} from "@icon-park/react";
 
 export function BaseAdmin() {
     const location = useLocation();
@@ -99,11 +99,15 @@ export function BaseAdmin() {
             <div className={"p-8 w-full"}>
                 <animated.div style={slideStyles}>
                     <div className={"flex items-center space-x-3"}>
-                        <button onClick={() => {
-                            setOpen(!open)
-                        }}>
-                            <Navigation24Filled/>
-                        </button>
+                        <label className="swap">
+                            <input type="checkbox" />
+                            <div className="swap-on" onClick={() => setOpen(false)} aria-hidden="true">
+                                <MenuFoldOne theme="outline" size="24" fill="#000000"/>
+                            </div>
+                            <div className="swap-off"  onClick={() => setOpen(true)} aria-hidden="true">
+                                <MenuUnfoldOne theme="outline" size="24" fill="#000000"/>
+                            </div>
+                        </label>
                         <div className={"text-2xl font-medium"}>{headerName}</div>
                     </div>
                     <div className={"pt-3"}>

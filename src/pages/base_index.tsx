@@ -33,6 +33,7 @@ import myAvatar from "../assets/images/my_avatar.png";
 import {useSelector} from "react-redux";
 import {SystemInfoEntity} from "../models/entity/system_info_entity.ts";
 import {animated, useSpring, useSprings} from "@react-spring/web";
+import {BambooSVG} from "../assets/svg/bamboo_svg.tsx";
 
 export function BaseIndex() {
     const webInfoStore = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
@@ -55,7 +56,7 @@ export function BaseIndex() {
         opacity: 1,
         transform: "translateX(0)",
         from: {opacity: 0, transform: "translateX(40px)"},
-        delay: index * 500+200,
+        delay: index * 500 + 200,
         config: {tension: 100, friction: 26},
     }));
 
@@ -87,11 +88,13 @@ export function BaseIndex() {
                     </animated.div>
                     <div className={"col-span-4 lg:col-span-3"}>
                         <div className={"text-center grid gap-3"}>
-                            <animated.h1
-                                className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl"
-                                style={{...springs[0], textShadow: "1px 1px 4px rgba(38,164,192,0.32)"}}>
-                                {webInfoStore.site.site_name}
-                            </animated.h1>
+                            <animated.div style={springs[0]} className={"flex justify-center"}>
+                                <h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl flex gap-3"
+                                    style={{textShadow: "1px 1px 4px rgba(38,164,192,0.32)"}}>
+                                    <BambooSVG size={52}/>
+                                    <span>{webInfoStore.site.site_name}</span>
+                                </h1>
+                            </animated.div>
                             <animated.div style={springs[1]} className={"lg:hidden items-center flex justify-center"}>
                                 <img alt="UserAvatar" className={"rounded-xl w-auto h-32"}
                                      src={myAvatar} draggable={false}/>

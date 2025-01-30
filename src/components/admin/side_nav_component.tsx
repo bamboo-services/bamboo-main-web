@@ -26,31 +26,23 @@
  * --------------------------------------------------------------------------------
  */
 
-import {
-    AppItem,
-    Hamburger,
-    NavCategory,
-    NavCategoryItem,
-    NavDivider,
-    NavDrawer,
-    NavDrawerBody,
-    NavDrawerHeader,
-    NavItem,
-    NavSubItem,
-    NavSubItemGroup,
-} from "@fluentui/react-nav-preview";
-import {
-    Accessibility28Regular,
-    ArrowExit20Filled,
-    Board20Regular,
-    GiftCard20Regular,
-    People20Regular,
-    Settings20Regular,
-} from "@fluentui/react-icons";
-import {Tooltip} from "@fluentui/react-components";
 import {useSelector} from "react-redux";
 import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
-import {useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
+import {useEffect} from "react";
+import {
+    ColorFilter,
+    Dashboard,
+    FriendsCircle,
+    Home,
+    Link as LinkImage,
+    LocalTwo,
+    Logout,
+    Other,
+    OvalLoveTwo,
+    Setting
+} from "@icon-park/react";
+import {BambooSVG} from "../../assets/svg/bamboo_svg.tsx";
 
 export function SideNavComponent({open, menuInfo, emit}: Readonly<{
     open: boolean,
@@ -61,63 +53,95 @@ export function SideNavComponent({open, menuInfo, emit}: Readonly<{
 
     const webInfo = useSelector((state: { webInfo: SystemInfoEntity }) => state.webInfo);
 
-    const renderHamburgerWithToolTip = () => {
-        return (
-            <Tooltip content="菜单" relationship="label">
-                <Hamburger onClick={() => emit(!open)}/>
-            </Tooltip>
-        );
-    };
+    const hasSelected = (menu: string) => {
+        return menu === menuInfo ?
+            "flex items-center bg-primary font-medium text-primary-content"
+            : "flex items-center";
+    }
+
+    useEffect(() => {
+        if (open) {
+            document.getElementById("nav")?.classList.add("lg:drawer-open")
+        } else {
+            document.getElementById("nav")?.classList.remove("lg:drawer-open");
+        }
+        emit(open);
+    }, [open, emit]);
 
     return (
         <div className={"flex fixed top-0 left-0 h-full"}>
-            <NavDrawer
-                selectedValue={menuInfo}
-                selectedCategoryValue={menuInfo}
-                openCategories={["friends"]}
-                open={open}
-                type={"inline"}
-                multiple={false}
-                className={"shadow-lg"}
-            >
-                <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
-                <NavDrawerBody>
-                    <AppItem
-                        icon={<Accessibility28Regular/>}
-                        as="a"
-                        href={"/"}
-                        className={"flex items-center"}
-                    >
-                        {webInfo.site.site_name}
-                    </AppItem>
-                    <NavItem onClick={() => navigate("/admin/dashboard")} icon={<Board20Regular className={"h-full"}/>}
-                             value="dashboard">
-                        看板
-                    </NavItem>
-                    <NavCategory value="friends">
-                        <NavCategoryItem icon={<People20Regular className={"h-full"}/>}>
-                            友链
-                        </NavCategoryItem>
-                        <NavSubItemGroup>
-                            <NavSubItem onClick={() => navigate("/admin/link")} value="link">友链管理</NavSubItem>
-                            <NavSubItem value="location">位置管理</NavSubItem>
-                            <NavSubItem value="color">颜色管理</NavSubItem>
-                        </NavSubItemGroup>
-                    </NavCategory>
-                    <NavItem onClick={() => navigate("/admin/sponsor")} icon={<GiftCard20Regular className={"h-full"}/>}
-                             value="sponsor">
-                        赞助
-                    </NavItem>
-                    <NavItem onClick={() => navigate("/admin/setting")} icon={<Settings20Regular className={"h-full"}/>}
-                             value="setting">
-                        设置
-                    </NavItem>
-                    <NavDivider/>
-                    <NavItem href={"/admin/dashboard"} icon={<ArrowExit20Filled className={"h-full"}/>} value="3">
-                        退出
-                    </NavItem>
-                </NavDrawerBody>
-            </NavDrawer>
+            <div id={"nav"} className="drawer lg:drawer-open">
+                <input id="my-drawer-2" type="checkbox" className="drawer-toggle"/>
+                <div className="drawer-content flex flex-col items-center justify-center">
+                    <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
+                        打开菜单
+                    </label>
+                </div>
+                <div className="drawer-side">
+                    <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+                    <ul className="menu bg-base-200 text-base-content min-h-full w-64 p-4 space-y-0.5">
+                        <button className={"flex items-center justify-center space-x-1"}
+                                onClick={() => navigate("/")}>
+                            <BambooSVG size={32}/>
+                            <span className={"text-3xl font-bold"}>{webInfo.site.site_name}</span>
+                        </button>
+                        <div className={"text-lg mt-4 mb-1 flex space-x-1 items-center"}>
+                            <Home theme="outline" size="20"/>
+                            <span>首页</span>
+                        </div>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/dashboard"} className={hasSelected("dashboard")}>
+                                <Dashboard theme="outline" size="16"/>
+                                <span>看板</span>
+                            </Link>
+                        </li>
+                        <div className={"text-lg mt-4 mb-1 flex space-x-1 items-center"}>
+                            <FriendsCircle theme="outline" size="20"/>
+                            <span>友链</span>
+                        </div>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/link"} className={hasSelected("link")}>
+                                <LinkImage theme="outline" size="16"/>
+                                <span>友链管理</span>
+                            </Link>
+                        </li>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/location"} className={hasSelected("location")}>
+                                <LocalTwo theme="outline" size="16"/>
+                                <span>位置管理</span>
+                            </Link>
+                        </li>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/color"} className={hasSelected("color")}>
+                                <ColorFilter theme="outline" size="16"/>
+                                <span>颜色管理</span>
+                            </Link>
+                        </li>
+                        <div className={"text-lg mt-4 mb-1 flex space-x-1 items-center"}>
+                            <Other theme="outline" size="20"/>
+                            <span>其他</span>
+                        </div>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/sponsor"} className={hasSelected("sponsor")}>
+                                <OvalLoveTwo theme="outline" size="16"/>
+                                <span>赞助</span>
+                            </Link>
+                        </li>
+                        <li className={"text-base"}>
+                            <Link to={"/admin/setting"} className={hasSelected("setting")}>
+                                <Setting theme="outline" size="16"/>
+                                <span>设置</span>
+                            </Link>
+                        </li>
+                        <li className={"text-base"}>
+                            <Link to={"/"} className={hasSelected("logout")}>
+                                <Logout theme="outline" size="16"/>
+                                <span>退出</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 }

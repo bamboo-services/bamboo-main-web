@@ -34,7 +34,7 @@
  * @param {string} pass - 用户密码
  * @param {boolean} remember - 是否记住登录状态
  */
-export interface AuthLoginDTO {
+export type AuthLoginDTO = {
     user: string,
     pass: string,
     remember: boolean,

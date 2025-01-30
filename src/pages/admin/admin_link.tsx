@@ -29,25 +29,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {SystemInfoEntity} from "../../models/entity/system_info_entity.ts";
 import {useEffect, useState} from "react";
-import {
-    Button,
-    Card,
-    CardFooter,
-    CardHeader,
-    CardPreview,
-    SearchBox,
-    Select,
-    Toolbar,
-    ToolbarButton,
-    ToolbarDivider
-} from "@fluentui/react-components";
-import {
-    CheckmarkStarburstRegular,
-    LinkDismissFilled,
-    LinkFilled,
-    PenRegular,
-    TabGroupRegular
-} from "@fluentui/react-icons";
 import defaultBackground from "../../assets/images/default-background.webp";
 import {AdminGetLinkAPI, AdminGetLocationAPI} from "../../apis/api_link.ts";
 import {setToaster} from "../../stores/toaster_store.ts";
@@ -58,6 +39,7 @@ import noAvatar from "../../assets/images/no_avatar.png";
 import {animated, useSprings} from "@react-spring/web";
 import {LocationGetAdminEntity} from "../../models/entity/location_get_admin_entity.ts";
 import {useNavigate} from "react-router";
+import {Editor, Group, LinkInterrupt, LinkTwo, Seal, Search} from "@icon-park/react";
 
 export function AdminLink({headerEmit, menuEmit}: Readonly<{
     headerEmit: (data: string) => void,
@@ -151,106 +133,104 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
     return (
         <div className={"grid grid-cols-12 gap-3 border-t"}>
             <div className={"col-span-full border-b py-1"}>
-                <Toolbar className={"flex gap-1"}>
-                    <ToolbarButton appearance={"primary"} onClick={() => {navigate("/admin/link/add")}}
-                                   icon={<LinkFilled fontSize={24}/>}>
-                        添加友链
-                    </ToolbarButton>
-                    <ToolbarButton appearance={"subtle"}
-                                   icon={<CheckmarkStarburstRegular fontSize={24}/>}>
-                        友链审核
-                    </ToolbarButton>
-                    <ToolbarButton appearance={"subtle"}
-                                   icon={<TabGroupRegular fontSize={24}/>}>
-                        友链组管理
-                    </ToolbarButton>
-                    <ToolbarDivider/>
-                    <ToolbarButton appearance={"subtle"}
-                                   icon={<LinkDismissFilled fontSize={24}/>}>
-                        检查失效友链
-                    </ToolbarButton>
-                    <ToolbarDivider/>
-                    <div className={"hidden lg:block"}>
-                        <Select onChange={(_, data) => {
-                            setSearchLocation(data.value);
-                        }}>
-                            <option value={""}>全部</option>
-                            {adminLocationList?.locations?.map((data) => (
-                                <option key={data.id} value={data.id}>{data.display_name}</option>
-                            ))}
-                        </Select>
-                    </div>
-                    <div className={"hidden lg:block"}>
-                        <SearchBox onChange={(_, data) => setSearchValue(data.value)} value={searchValue}/>
-                    </div>
-                </Toolbar>
+                <div className={"flex gap-1 p-1"}>
+                    <button onClick={() => navigate("/admin/link/add")} className={"btn btn-primary btn-sm"}>
+                        <LinkTwo theme="outline" size="16"/>
+                        <span className={"text-sm"}>添加友链</span>
+                    </button>
+                    <button className={"btn btn-ghost btn-sm"}>
+                        <Seal theme="outline" size="16"/>
+                        <span className={"text-sm"}>友链审核</span>
+                    </button>
+                    <button className={"btn btn-ghost btn-sm"}>
+                        <Group theme="outline" size="16"/>
+                        <span className={"text-sm"}>友链组管理</span>
+                    </button>
+                    <div className={"divider divider-horizontal"}/>
+                    <button className={"btn btn-ghost btn-sm"}>
+                        <LinkInterrupt theme="outline" size="16"/>
+                        <span className={"text-sm"}>检查失效友链</span>
+                    </button>
+                    <div className={"divider divider-horizontal"}/>
+                    <select defaultValue="Pick a color" className="select select-sm w-min"
+                            onChange={(data) => setSearchLocation(data.target.value)}>
+                        <option value={""}>全部</option>
+                        {adminLocationList?.locations?.map((data) => (
+                            <option key={data.id} value={data.id}>{data.display_name}</option>
+                        ))}
+                    </select>
+                    <label className="input input-sm">
+                        <Search theme="outline" size="14"/>
+                        <input type="search" className="grow" placeholder="查找"
+                               onChange={(data) => setSearchValue(data.target.value)}/>
+                    </label>
+                </div>
             </div>
             <div className={"col-span-full lg:col-span-9"}>
                 <div className={"grid grid-cols-1 lg:grid-cols-2 gap-3"}>
                     {adminLinkList.total !== 0 ? paginatedData.map((data, index) => (
                         <animated.div style={springs[index + 1]} key={data.id}>
-                            <Card key={data.id} className="w-full shadow-lg transition hover:bg-gray-100/75">
-                                <CardHeader
-                                    image={
-                                        <img
-                                            className="rounded-md min-w-10"
-                                            src={data.site_logo}
-                                            alt={data.id.toString()}
-                                            onError={(e) => {
-                                                e.currentTarget.src = noAvatar;
-                                                e.currentTarget.onerror = null;
-                                            }}
-                                        />
-                                    }
-                                    header={
-                                        <a href={data.site_url} rel={"noreferrer noopener"}
-                                           target={"_blank"} className={"font-bold transition hover:text-[#199910]"}>
-                                            {data.site_name}
-                                        </a>
-                                    }
-                                    description={
-                                        data.webmaster_email ? (
-                                            <a href={`mailto:${data.webmaster_email}`} rel={"noreferrer noopener"}
-                                               className={"transition line-clamp-1 w-64 text-gray-500 hover:text-gray-900 font-thin"}>
-                                                {data.webmaster_email || "NULL"}
-                                            </a>
-                                        ) : (
-                                            <div className={"line-clamp-1 w-64 text-white font-thin"}>
-                                                NULL
+                            <div
+                                className="card w-full bg-base-100 hover:bg-base-200 transition card-sm shadow-sm border border-base-200">
+                                <div className="card-body grid gap-1">
+                                    <div className={"flex justify-between items-start"}>
+                                        <div className={"flex items-center space-x-2"}>
+                                            <img
+                                                className="rounded-md size-10"
+                                                src={data.site_logo}
+                                                alt={data.id.toString()}
+                                                onError={(e) => {
+                                                    e.currentTarget.src = noAvatar;
+                                                    e.currentTarget.onerror = null;
+                                                }}
+                                            />
+                                            <div className={"flex flex-col"}>
+                                                <a href={data.site_url} rel={"noreferrer noopener"}
+                                                   target={"_blank"}
+                                                   className={"font-bold transition hover:text-secondary"}>{data.site_name}</a>
+                                                {
+                                                    data.webmaster_email ? (
+                                                        <a href={`mailto:${data.webmaster_email}`}
+                                                           rel={"noreferrer noopener"}
+                                                           className={"transition line-clamp-1 w-64 text-base-content hover:text-secondary font-thin"}>
+                                                            {data.webmaster_email || "NULL"}
+                                                        </a>
+                                                    ) : (
+                                                        <div className={"line-clamp-1 w-64 text-white font-thin"}>
+                                                            NULL
+                                                        </div>
+                                                    )
+                                                }
                                             </div>
-                                        )
-                                    }
-                                    action={
-                                        <Button
-                                            appearance="transparent"
-                                            icon={<PenRegular fontSize={24}/>}
-                                            aria-label="Edit"
-                                            onClick={() => navigate(`/admin/link/edit/${data.id}`)}
-                                        />
-                                    }
-                                />
-                                <p className="m-0 line-clamp-2">
-                                    {data.site_description || "这个站长很懒，没有写对应的描述内容......"}
-                                </p>
-                            </Card>
+                                        </div>
+                                        <button className={"btn btn-sm btn-square btn-ghost hover:text-secondary p-2"} type={"button"}
+                                                onClick={() => navigate(`/admin/link/edit/${data.id}`)}>
+                                            <Editor theme="outline" size="20"/>
+                                        </button>
+                                    </div>
+                                    <p className="m-0 line-clamp-2">
+                                        {data.site_description || "这个站长很懒，没有写对应的描述内容......"}
+                                    </p>
+                                </div>
+                            </div>
                         </animated.div>
                     )) : "暂时没有友链呢"}
                     <animated.div style={springs[paginatedData.length + 1]}
-                                  className="col-span-full justify-center items-center mt-4 flex">
+                                  className="col-span-full justify-center items-center mt-4 flex space-x-1">
                         <button
                             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
-                            className="transition px-4 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                            className="transition btn btn-sm disabled:opacity-50"
                         >
                             上一页
                         </button>
-                        <div className="flex">
+                        <div className="flex space-x-1">
                             {Array.from({length: totalPages}, (_, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setCurrentPage(i + 1)}
-                                    className={`transition px-3 py-1 mx-1 rounded ${
-                                        currentPage === i + 1 ? "bg-[#1C8912] text-white" : "bg-gray-200"
+                                    className={`transition btn btn-sm ${
+                                        currentPage === i + 1 ? "btn-primary text-primary-content" : null
                                     }`}
                                 >
                                     {i + 1}
@@ -260,7 +240,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                         <button
                             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
-                            className="transition px-4 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                            className="transition btn btn-sm disabled:opacity-50"
                         >
                             下一页
                         </button>
@@ -268,52 +248,43 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                 </div>
             </div>
             <animated.div className={"lg:col-span-3 hidden lg:block"} style={springs[0]}>
-                <Card className={"m-auto w-full shadow-md rounded-lg bg-white"}>
-                    <CardPreview>
-                        <img
-                            className="object-cover w-full h-36"
-                            src={defaultBackground}
-                            alt="背景图"
-                        />
-                    </CardPreview>
-                    <CardHeader
-                        header={<div className="text-xl font-bold text-gray-800">友链状态</div>}
-                        description={<div className="text-sm text-gray-500">概览统计信息</div>}
-                    />
-                    <CardFooter>
-                        <div className={"grid gap-3 px-4 py-3"}>
-                            <div className="grid grid-cols-2 text-gray-700">
-                                <span className="font-medium">总链接数</span>
-                                <span
-                                    className="text-right font-bold text-blue-600">{adminLinkList.total || 0} 个</span>
-                            </div>
-                            <div className="grid grid-cols-2 text-gray-700">
-                                <span className="font-medium">待审核数</span>
-                                <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList.reviewed || 0} 个
-                                </span>
-                            </div>
-                            <div className="grid grid-cols-2 text-gray-700">
-                                <span className="font-medium">最近添加</span>
-                                <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList.recently_added || 0} 个
-                                </span>
-                            </div>
-                            <div className="grid grid-cols-2 text-gray-700">
-                                <span className="font-medium">最近修改</span>
-                                <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList.recently_modified || 0} 个
-                                </span>
-                            </div>
-                            <div className="grid grid-cols-2 text-gray-700">
-                                <span className="font-medium">已删除</span>
-                                <span className="text-right font-bold text-blue-600">
-                                    {adminLinkList?.links?.filter(link => link.deleted_at !== null).length} 个
-                                </span>
-                            </div>
+                <div className="card bg-base-100 card-sm shadow-sm">
+                    <figure>
+                        <img src={defaultBackground} alt={"background-image"}/>
+                    </figure>
+                    <div className="card-body">
+                        <h2 className="card-title">友链状态</h2>
+                        <p>概览统计信息</p>
+                        <div className="card-actions">
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th>状态</th>
+                                    <th>值</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>总连接数</td>
+                                    <td>{adminLinkList.total || 0} 个</td>
+                                </tr>
+                                <tr>
+                                    <td>待审核数</td>
+                                    <td>{adminLinkList.reviewed || 0} 个</td>
+                                </tr>
+                                <tr>
+                                    <td>最近添加</td>
+                                    <td>{adminLinkList.recently_added || 0} 个</td>
+                                </tr>
+                                <tr>
+                                    <td>最近修改</td>
+                                    <td>{adminLinkList.recently_modified || 0} 个</td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </CardFooter>
-                </Card>
+                    </div>
+                </div>
             </animated.div>
         </div>
     );
