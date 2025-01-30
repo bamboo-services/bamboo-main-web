@@ -27,7 +27,7 @@
  */
 
 import {animated, useSprings} from "@react-spring/web";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AddLinkUserAPI, GetAbleSelectColorAPI, GetAbleSelectLocationAPI} from "../../apis/api_link.ts";
 import {ColorAbleSelectEntity} from "../../models/entity/color_able_select_entity.ts";
 import {useDispatch} from "react-redux";
@@ -58,7 +58,7 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
 
     const [getColor, setGetColor] = useState<ColorAbleSelectEntity>({} as ColorAbleSelectEntity);
     const [getLocation, setGetLocation] = useState<LocationAbleSelectEntity>({} as LocationAbleSelectEntity);
-    const [linkAdd, setLinkAdd] = useState<LinkAddDTO>({} as LinkAddDTO);
+    const [linkAdd, setLinkAdd] = useState<LinkAddDTO>({site_rss_url: "", remark: ""} as LinkAddDTO);
     const [changeAdd, setChangeAdd] = useState<boolean>(false);
     const [changAddSpring, setChangAddSpring] = useState<boolean>(false);
 
@@ -122,7 +122,8 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
         });
     }
 
-    async function submitLinkAdd() {
+    async function submitLinkAdd(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         const getResp = await AddLinkUserAPI(linkAdd);
         if (getResp?.output === "Success") {
             dispatch(setToaster({
@@ -145,7 +146,7 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
     }
 
     return (
-        <div className={"grid grid-cols-2 gap-3"}>
+        <form onSubmit={submitLinkAdd} className={"grid grid-cols-2 gap-3"}>
             {changeAdd ? (
                 <>
                     <div className={"col-span-full flex text-2xl font-bold justify-center"}>
@@ -284,7 +285,7 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
                             <input
                                 type="url"
                                 placeholder="https://www.x-lf.com/"
-                                pattern="^(http|https)://[^\s]+.(jpg|jpeg|webp|png|ico)$"
+                                pattern="^(http|https)://[^\s]+.(jpg|jpeg|webp|png|ico)(![^\s]+)?$"
                                 title="请输入有效的URL地址"
                                 onChange={(e) => setLinkAdd({...linkAdd, site_logo: e.target.value})}
                                 required
@@ -466,8 +467,7 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
                     </animated.div>
 
                     <animated.div style={springs[12]} className={"grid col-span-full w-full justify-center mt-6"}>
-                        <button className="btn btn-outline btn-primary"
-                                onClick={submitLinkAdd}>
+                        <button type={"submit"} className="btn btn-outline btn-primary">
                             提交申请
                         </button>
                     </animated.div>
@@ -578,6 +578,6 @@ export function OperateAddFriends({emitLinkDisplay}: Readonly<{
                     </animated.div>
                 </>
             )}
-        </div>
+        </form>
     );
 }

@@ -34,6 +34,8 @@ import noAvatar from "../assets/images/no_avatar.png";
 import {useEffect, useState} from "react";
 import {LinkDisplayModule} from "../models/modules/link_display_module.ts";
 import {OperateEditFriends} from "./operate/operate_edit_friends.tsx";
+import {OperateAddFriendsSuccess} from "./operate/operate_add_friends_success.tsx";
+import {OperateError} from "./operate/operate_error.tsx";
 
 export function BaseOperate() {
     const location = useLocation();
@@ -190,8 +192,11 @@ export function BaseOperate() {
                                     <Routes location={item}>
                                         <Route path={"/add"}
                                                element={<OperateAddFriends emitLinkDisplay={setLinkDisplay}/>}/>
+                                        <Route path={"/add/success"}
+                                               element={<OperateAddFriendsSuccess/>}/>
                                         <Route path={"/edit"}
                                                element={<OperateEditFriends emitLinkDisplay={setLinkDisplay}/>}/>
+                                        <Route path={"*"} element={<OperateError/>}/>
                                     </Routes>
                                 </animated.div>
                             ))}
