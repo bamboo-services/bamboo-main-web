@@ -26,15 +26,30 @@
  * --------------------------------------------------------------------------------
  */
 
-import {JSX} from "react";
+import {JSX, useEffect, useState} from "react";
 
-export function InfoLabel({data, icon, clazz}: Readonly<{
+export function InfoLabel({data, icon, clazz, direction}: Readonly<{
     data: JSX.Element | string,
     icon?: JSX.Element,
-    clazz?: string
+    clazz?: string,
+    direction?: "top" | "bottom" | "left" | "right"
 }>) {
+    const [tooltipDirection, setTooltipDirection] = useState<string>("tooltip-top");
+
+    useEffect(() => {
+        if (direction === "top") {
+            setTooltipDirection("tooltip-top");
+        } else if (direction === "bottom") {
+            setTooltipDirection("tooltip-bottom");
+        } else if (direction === "left") {
+            setTooltipDirection("tooltip-left");
+        } else if (direction === "right") {
+            setTooltipDirection("tooltip-right");
+        }
+    }, [direction]);
+
     return (
-        <div className={"tooltip " + clazz}>
+        <div className={"tooltip " + clazz + " " + tooltipDirection}>
             <div className="tooltip-content">
                 {data}
             </div>

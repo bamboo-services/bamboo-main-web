@@ -37,6 +37,7 @@ import {ColorsEntity} from "../models/entity/color_get_entity.ts";
 import {LinkAddDTO} from "../models/dto/link_add.ts";
 import {LinkAddAdminDTO} from "../models/dto/link_add_admin.ts";
 import {ColorAbleSelectEntity} from "../models/entity/color_able_select_entity.ts";
+import {LinkVerify} from "../models/dto/link_verify.ts";
 
 /**
  * GetLinkAPI
@@ -279,6 +280,25 @@ const GetAbleSelectLocationAPI = async (): Promise<BaseResponse<LocationGetAdmin
     );
 }
 
+/**
+ * VerifyLinkAPI
+ *
+ * 用于验证链接是否存在，该接口为用户端接口，不需要进行权限验证
+ *
+ * @param data
+ * @constructor
+ */
+const VerifyLinkAPI = async (data: LinkVerify): Promise<BaseResponse<null> | undefined> => {
+    return BaseApi<null>(
+        MethodType.GET,
+        "/api/v1/link/verify",
+        null,
+        data,
+        null,
+        {"Authorization": GetAuthorizationToken()}
+    );
+}
+
 export {
     AdminGetLinkAPI,
     GetLinkAPI,
@@ -292,5 +312,6 @@ export {
     AdminAddLocationAPI,
     AdminGetColorAPI,
     GetAbleSelectColorAPI,
-    GetAbleSelectLocationAPI
+    GetAbleSelectLocationAPI,
+    VerifyLinkAPI
 };

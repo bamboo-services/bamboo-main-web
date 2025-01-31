@@ -41,6 +41,7 @@ import {AdminLinkAdd} from "./admin/admin_link_add.tsx";
 import {AdminSponsor} from "./admin/admin_sponsor.tsx";
 import {AdminLinkEdit} from "./admin/admin_link_edit.tsx";
 import {MenuFoldOne, MenuUnfoldOne} from "@icon-park/react";
+import {AdminLinkVerify} from "./admin/admin_link_verify.tsx";
 
 export function BaseAdmin() {
     const location = useLocation();
@@ -126,6 +127,9 @@ export function BaseAdmin() {
                                     <Route
                                         path={"link/edit/:id"}
                                         element={<AdminLinkEdit headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
+                                    <Route
+                                        path={"link/verify"}
+                                        element={<AdminLinkVerify headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>
                                     <Route
                                         path={"sponsor"}
                                         element={<AdminSponsor headerEmit={setHeaderName} menuEmit={setMenuInfo}/>}/>

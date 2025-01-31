@@ -28,17 +28,18 @@
 
 import {useDispatch} from "react-redux";
 import {useNavigate, useParams} from "react-router";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {LocationGetAdminEntity} from "../../models/entity/location_get_admin_entity.ts";
 import {ColorsEntity} from "../../models/entity/color_get_entity.ts";
 import {AddLinkAPI, AdminGetColorAPI, AdminGetLocationAPI, EditLinkAPI, GetSingleLinkAPI} from "../../apis/api_link.ts";
 import {setToaster} from "../../stores/toaster_store.ts";
 import {animated, useSpring, useSprings} from "@react-spring/web";
-import {Button, Card, CardFooter, CardPreview, Input, Label, Select, Textarea} from "@fluentui/react-components";
 import noAvatar from "../../assets/images/no_avatar.png";
 import defaultBackground from "../../assets/images/default-background.webp";
 import {BaseResponse} from "../../models/base_response.ts";
 import {InnerLinkDTO} from "../../models/entity/link_get_entity.ts";
+import {InfoLabel} from "../info_label.tsx";
+import {ColorFilter, Editor, Home, Link, LocalTwo, Mail, NetworkDrive, Pic, Rss, Telegram} from "@icon-park/react";
 
 export function LinkOperateComponent({type}: Readonly<{
     type: "add" | "edit"
@@ -124,7 +125,8 @@ export function LinkOperateComponent({type}: Readonly<{
         }
     }, [linkAdminOperateDTO]);
 
-    async function handleSubmit() {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         // 检查输入数据
         if (linkAdminOperateDTO.site_name === "" || linkAdminOperateDTO.site_name === undefined || linkAdminOperateDTO.site_name === null) {
             dispatch(setToaster({
@@ -215,231 +217,375 @@ export function LinkOperateComponent({type}: Readonly<{
     });
 
     return (
-        <div className="grid grid-cols-12 gap-3">
+        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-3">
             <div className={"col-span-12 lg:col-span-8"}>
-                <div className="grid grid-cols-12 gap-4">
-                    <animated.div className="col-span-6" style={springs[1]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>站长邮箱</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入站长邮箱"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.webmaster_email}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, webmaster_email: data.value})
-                            }}
-                        />
+                <div className="grid grid-cols-2 gap-3">
+                    <animated.div style={springs[1]}>
+                        <label className="input validator transition w-full">
+                            <div className="label">
+                                <span>站长邮箱</span>
+                                <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="gm@x-lf.cn"
+                                pattern="^(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*|)$"
+                                title="邮箱格式不正确"
+                                value={linkAdminOperateDTO?.webmaster_email}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    webmaster_email: event.target.value
+                                })}
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>（选填）填写后对方可以通过该邮箱自行修改内容或接收通知</span>
+                                    </div>
+                                }
+                                direction={"left"}
+                                icon={<Mail theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
+                        <p className="validator-hint hidden">
+                            邮箱格式不正确
+                        </p>
                     </animated.div>
-                    <animated.div className="col-span-6" style={springs[2]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>服务提供商</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入服务提供商"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.service_provider}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, service_provider: data.value})
-                            }}
-                        />
+                    <animated.div style={springs[2]}>
+                        <label className="input validator transition w-full">
+                            <div className="label">
+                                <span>服务提供</span>
+                                <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="阿里云"
+                                value={linkAdminOperateDTO?.service_provider}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    service_provider: event.target.value
+                                })}
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>对方站点搭建所在的服务提供商（用于备注使用）</span>
+                                    </div>
+                                }
+                                direction={"left"}
+                                icon={<NetworkDrive theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
                     </animated.div>
-                    <animated.div className="col-span-6" style={springs[3]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>站点名字</span>
-                            <span className={"text-xs text-red-500"}>*</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入站点名字"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.site_name}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, site_name: data.value})
-                            }}
-                            required
-                        />
+                    <animated.div style={springs[3]}>
+                        <label className="input validator transition w-full">
+                            <div className="label">
+                                <span>站点名字</span>
+                                <span className={"text-xs text-red-500"}>*</span>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="凌中的锋雨"
+                                title="请输入站点名称"
+                                value={linkAdminOperateDTO?.site_name}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    site_name: event.target.value
+                                })}
+                                required
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>站点名字，例如：</span>
+                                        <b className="text-primary">凌中的锋雨</b>
+                                    </div>
+                                }
+                                icon={<Home theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
+                        <p className="validator-hint hidden">
+                            请输入站点名称
+                        </p>
                     </animated.div>
-                    <animated.div className="col-span-6" style={springs[4]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>站点地址</span>
-                            <span className={"text-xs text-red-500"}>*</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入站点地址"
-                            required
-                            size={"large"}
-                            value={linkAdminOperateDTO?.site_url}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, site_url: data.value})
-                            }}
-                        />
+                    <animated.div style={springs[4]}>
+                        <label className="input validator transition w-full">
+                            <div className="label">
+                                <span>站点地址</span>
+                                <span className={"text-xs text-red-500"}>*</span>
+                            </div>
+                            <input
+                                type="url"
+                                placeholder="https://www.x-lf.com/"
+                                pattern="^(http|https)://[^\s]*$"
+                                title="请输入有效的URL地址"
+                                value={linkAdminOperateDTO?.site_url}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    site_url: event.target.value
+                                })}
+                                required
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>您的站点地址（需包含http/https协议头）：</span>
+                                        <a href={"https://www.x-lf.com/"}
+                                           className="text-primary hover:underline"
+                                           target="_blank"
+                                           rel="noreferrer">
+                                            https://www.x-lf.com/
+                                        </a>
+                                    </div>
+                                }
+                                icon={<Link theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
+                        <p className="validator-hint hidden">
+                            请输入有效的URL地址
+                        </p>
                     </animated.div>
-                    <animated.div className="col-span-6" style={springs[5]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>站点图标</span>
-                            <span className={"text-xs text-red-500"}>*</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入图标地址"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.site_logo}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, site_logo: data.value})
-                            }}
-                        />
+                    <animated.div className="col-span-full" style={springs[5]}>
+                        <label className="input validator transition w-full">
+                            <div className="label">
+                                <span>站点图片</span>
+                                <span className={"text-xs text-red-500"}>*</span>
+                            </div>
+                            <input
+                                type="url"
+                                placeholder="https://www.x-lf.com/"
+                                pattern="^(http|https)://[^\s]+.(jpg|jpeg|webp|png|ico)(![^\s]+)?$"
+                                title="请输入有效的URL地址"
+                                value={linkAdminOperateDTO?.site_logo}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    site_logo: event.target.value
+                                })}
+                                required
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>图片地址支持 PNG/JPG/JPEG/WEBP/ICO 格式</span>
+                                        <span>推荐尺寸：256×256 像素</span>
+                                    </div>
+                                }
+                                icon={<Pic theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
+                        <p className="validator-hint hidden">
+                            请输入有效的图片地址
+                            <br/>图片地址支持 PNG/JPG/JPEG/WEBP/ICO 格式
+                        </p>
                     </animated.div>
-                    <animated.div className="col-span-6" style={springs[6]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>订阅地址</span>
-                        </Label>
-                        <Input
-                            className={"w-full"}
-                            placeholder="请输入订阅地址"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.site_rss_url}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, site_rss_url: data.value})
-                            }}
-                        />
+                    <animated.div className="col-span-full" style={springs[6]}>
+                        <label className="input transition w-full">
+                            <div className="label">
+                                <span>订阅地址</span>
+                                <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                            </div>
+                            <input
+                                type="url"
+                                placeholder="https://www.x-lf.com/atom.xml"
+                                pattern="^(http|https)://[^\s]*$"
+                                title="请输入有效的站点订阅地址"
+                                value={linkAdminOperateDTO?.site_rss_url}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    site_rss_url: event.target.value
+                                })}
+                            />
+                            <InfoLabel
+                                clazz={"label"}
+                                data={
+                                    <div className={"grid"}>
+                                        <span>Rss/Atom订阅地址（可选）</span>
+                                        <a href={"https://blog.x-lf.com/atom.xml"}
+                                           className="text-primary hover:underline"
+                                           target="_blank"
+                                           rel="noreferrer">
+                                            https://blog.x-lf.com/atom.xml
+                                        </a>
+                                    </div>
+                                }
+                                icon={<Rss theme="outline" size="18" fill="#000000"/>}
+                            />
+                        </label>
                     </animated.div>
-                    <animated.div className="col-span-12" style={springs[7]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>站点描述</span>
-                            <span className={"text-xs text-red-500"}>*</span>
-                        </Label>
-                        <Textarea
-                            className={"w-full"}
-                            placeholder="请输入站点描述"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.site_description}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, site_description: data.value})
-                            }}
-                        />
+                    <animated.div className="col-span-full grid" style={springs[7]}>
+                        <label className="textarea validator w-full">
+                            <div className={"flex items-center space-x-1"}>
+                                <InfoLabel
+                                    data={
+                                        <div className={"grid"}>
+                                            <span>用一句话描述您的站点：</span>
+                                            <b className="text-primary">不为如何，只为在茫茫人海中有自己的一片天空~</b>
+                                        </div>
+                                    }
+                                    icon={<Editor theme="outline" size="18" fill="#000000"/>}
+                                />
+                                <div className="label">
+                                    <span>站点描述</span>
+                                    <span className={"text-xs text-red-500"}>*</span>
+                                </div>
+                            </div>
+                            <textarea
+                                placeholder="不为如何，只为在茫茫人海中有自己的一片天空"
+                                className="w-full textarea"
+                                required
+                                value={linkAdminOperateDTO?.site_description}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    site_description: event.target.value
+                                })}
+                            />
+                        </label>
+                        <p className="validator-hint hidden">
+                            请输入站点描述
+                        </p>
                     </animated.div>
-                    <animated.div className="col-span-12" style={springs[8]}>
-                        <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                            <span>备注</span>
-                        </Label>
-                        <Textarea
-                            className={"w-full"}
-                            placeholder="请输入备注信息"
-                            size={"large"}
-                            value={linkAdminOperateDTO?.remark}
-                            onChange={(_, data) => {
-                                setLinkAdminOperateDTO({...linkAdminOperateDTO, remark: data.value})
-                            }}
-                        />
+                    <animated.div className="col-span-full grid" style={springs[8]}>
+                        <label className="textarea w-full">
+                            <div className={"flex items-center space-x-1"}>
+                                <InfoLabel
+                                    data={
+                                        <div className={"grid"}>
+                                            <span>给站长的留言（可选）：</span>
+                                            <span className="text-gray-500">（仅站长可见）</span>
+                                        </div>
+                                    }
+                                    icon={<Telegram theme="outline" size="18" fill="#000000"/>}
+                                />
+                                <div className="label">
+                                    <span>备注留言</span>
+                                    <span className={"text-xs text-red-500 opacity-0"}>*</span>
+                                </div>
+                            </div>
+                            <textarea
+                                placeholder="请输入备注信息"
+                                className="w-full textarea"
+                                value={linkAdminOperateDTO?.remark}
+                                onChange={(event) => setLinkAdminOperateDTO({
+                                    ...linkAdminOperateDTO,
+                                    remark: event.target.value
+                                })}
+                            />
+                        </label>
                     </animated.div>
                 </div>
             </div>
 
             <div className={"lg:col-span-4 grid gap-3"}>
-                <animated.div
-                    className={"border rounded-md bg-white shadow hover:scale-105 grid gap-1 text-center justify-center p-3"}
-                    style={ableSeeSpring}>
-                    <div className={"flex justify-center"}>
-                        <img src={linkAdminOperateDTO?.site_logo}
-                             onError={(e) => {
-                                 e.currentTarget.src = noAvatar;
-                                 e.currentTarget.onerror = null;
-                             }}
-                             alt={""} draggable={false}
-                             className={"rounded-full size-12 lg:size-16 shadow-lg shadow-gray-100"}/>
+                <animated.div style={ableSeeSpring}
+                              className={"card card-border bg-base-100 card-sm shadow-md"}>
+                    <div className="card-body grid gap-1 text-center">
+                        <div className={"flex justify-center"}>
+                            <img src={linkAdminOperateDTO?.site_logo}
+                                 onError={(e) => {
+                                     e.currentTarget.src = noAvatar;
+                                     e.currentTarget.onerror = null;
+                                 }}
+                                 alt={""} draggable={false}
+                                 className={"rounded-full size-12 lg:size-16 shadow-lg shadow-gray-100"}/>
+                        </div>
+                        <div className={"text-lg font-bold truncate"}>{linkAdminOperateDTO?.site_name}</div>
+                        <div className={"text-sm font-light text-gray-400 line-clamp-1"}>
+                            {linkAdminOperateDTO?.site_description}
+                        </div>
                     </div>
-                    <div className={"text-lg font-bold truncate"}>{linkAdminOperateDTO?.site_name}</div>
-                    <div
-                        className={"text-sm font-light text-gray-400 truncate"}>{linkAdminOperateDTO?.site_description}</div>
                 </animated.div>
 
                 <animated.div className={"hidden lg:block"} style={{...springs[0], ...moveSpring}}>
-                    <Card className={"m-auto w-full shadow-md rounded-md bg-white"}>
-                        <CardPreview>
-                            <img
-                                className="object-cover w-full h-36"
-                                src={defaultBackground}
-                                alt="背景图"
-                            />
-                        </CardPreview>
-                        <CardFooter>
-                            <div className={"w-full grid grid-cols-2 gap-3"}>
+                    <div className="card bg-base-100 card-sm shadow-sm">
+                        <figure>
+                            <img src={defaultBackground} alt={"background-image"}/>
+                        </figure>
+                        <div className="card-body">
+                            <div className={"w-full grid gap-3"}>
                                 <div>
-                                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                                        <span>展示位置</span>
-                                        <span className={"text-xs text-red-500"}>*</span>
-                                    </Label>
-                                    <Select
-                                        className={"w-full"}
-                                        required
-                                        size={"large"}
-                                        value={linkAdminOperateDTO?.location === 0 ? "" : linkAdminOperateDTO.location}
-                                        onChange={(_, data) => {
-                                            setLinkAdminOperateDTO({...linkAdminOperateDTO, location: Number(data.value)})
-                                        }}
-                                    >
-                                        <option value="">请选择位置</option>
-                                        {getLocation.locations?.map((item) => (
-                                            <option value={item.id} key={item.id}>{item.display_name}</option>
-                                        ))}
-                                    </Select>
+                                    <label className="select validator w-full">
+                                        <div className="label">
+                                            <span>展示位置</span>
+                                            <span className={"text-xs text-red-500"}>*</span>
+                                        </div>
+                                        <select
+                                            required
+                                            value={linkAdminOperateDTO?.location === 0 ? "" : linkAdminOperateDTO.location}
+                                            onChange={(event) =>
+                                                setLinkAdminOperateDTO({
+                                                    ...linkAdminOperateDTO,
+                                                    location: Number(event.target.value)
+                                                })}
+                                        >
+                                            <option value="">请选择颜色</option>
+                                            {getLocation.locations?.map((location, index) => (
+                                                <option key={"location-" + index} value={location.id}>
+                                                    {location.display_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <InfoLabel
+                                            data={
+                                                <div className={"grid"}>
+                                                    <span>选择展示位置</span>
+                                                </div>
+                                            }
+                                            icon={<LocalTwo theme="outline" size="18" fill="#000000"/>}
+                                        />
+                                    </label>
+                                    <p className="validator-hint hidden">
+                                        请选择展示位置
+                                    </p>
                                 </div>
                                 <div>
-                                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                                        <span>选择展示颜色</span>
-                                        <span className={"text-xs text-red-500"}>*</span>
-                                    </Label>
-                                    <Select
-                                        className={"w-full"}
-                                        required
-                                        size={"large"}
-                                        value={linkAdminOperateDTO?.color === 0 ? "" : linkAdminOperateDTO.color}
-                                        onChange={(_, data) => {
-                                            setLinkAdminOperateDTO({...linkAdminOperateDTO, color: Number(data.value)})
-                                        }}
-                                    >
-                                        <option value="">默认</option>
-                                        {getColor.colors?.map((item) => (
-                                            <option value={item.id} key={item.id}>{item.display_name}</option>
-                                        ))}
-                                    </Select>
-                                </div>
-                                <div className={"col-span-full"}>
-                                    <Label htmlFor={"user"} className={"flex space-x-0.5"}>
-                                        <span>是否有广告</span>
-                                        <span className={"text-xs text-red-500"}>*</span>
-                                    </Label>
-                                    <Select
-                                        className={"w-full"}
-                                        required
-                                        size={"large"}
-                                        defaultValue={linkAdminOperateDTO?.has_adv ? "1" : "0"}
-                                        onChange={(_, data) => {
-                                            setLinkAdminOperateDTO({...linkAdminOperateDTO, has_adv: data.value === "1"})
-                                        }}
-                                    >
-                                        <option value={"0"}>否</option>
-                                        <option value={"1"}>是</option>
-                                    </Select>
+                                    <label className="select validator w-full">
+                                        <div className="label">
+                                            <span>展示颜色</span>
+                                            <span className={"text-xs text-red-500"}>*</span>
+                                        </div>
+                                        <select
+                                            required
+                                            value={linkAdminOperateDTO?.color === 0 ? "" : linkAdminOperateDTO.color}
+                                            onChange={(event) => setLinkAdminOperateDTO({
+                                                ...linkAdminOperateDTO,
+                                                color: Number(event.target.value)
+                                            })}
+                                        >
+                                            <option value="">请选择位置</option>
+                                            {getColor.colors?.map((color, index) => (
+                                                <option key={"color-" + index} value={color.id}>
+                                                    {color.display_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <InfoLabel
+                                            data={
+                                                <div className={"grid"}>
+                                                    <span>选择边框强调色</span>
+                                                </div>
+                                            }
+                                            icon={<ColorFilter theme="outline" size="18" fill="#000000"/>}
+                                        />
+                                    </label>
+                                    <p className="validator-hint hidden">
+                                        请选择展示颜色
+                                    </p>
                                 </div>
                                 <div className={"flex justify-end gap-3 col-span-full"}>
-                                    <Button
-                                        appearance="primary"
-                                        size={"large"}
-                                        onClick={handleSubmit}
-                                    >
+                                    <button className={"btn btn-primary "} type={"submit"}>
                                         确认添加
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
-                        </CardFooter>
-                    </Card>
+                        </div>
+                    </div>
                 </animated.div>
             </div>
-        </div>
+        </form>
     );
 }

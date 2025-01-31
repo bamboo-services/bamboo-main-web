@@ -138,7 +138,7 @@ export function AdminLink({headerEmit, menuEmit}: Readonly<{
                         <LinkTwo theme="outline" size="16"/>
                         <span className={"text-sm"}>添加友链</span>
                     </button>
-                    <button className={"btn btn-ghost btn-sm"}>
+                    <button onClick={() => navigate("/admin/link/verify")} className={"btn btn-ghost btn-sm"}>
                         <Seal theme="outline" size="16"/>
                         <span className={"text-sm"}>友链审核</span>
                     </button>
